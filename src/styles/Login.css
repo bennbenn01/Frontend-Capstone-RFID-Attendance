@@ -1,0 +1,258 @@
+@media (max-width: 376px) {
+    .login-container {
+        width: 95%;
+        padding: 5%;
+    } 
+
+    .login-form-control,
+    .login-form-button {
+        width: 250px;
+    }
+
+    .login-password-container {
+        width: 100%;
+    }
+
+    .login-google-button,
+    .login-facebook-button {
+        width: 250px;
+    }
+}
+
+@media (min-width: 375px) and (max-width: 425px) {
+    .login-container {
+        width: 95%;
+        padding: 5%;
+    } 
+
+    .login-form-control,
+    .login-form-button {
+        width: 300px;
+    }
+
+    .login-password-container {
+        width: 100%;
+    }
+
+    .login-google-button,
+    .login-facebook-button {
+        width: 300px;
+    }
+}
+
+@media (min-width: 426px) and (max-width: 460px) {
+    .login-container {
+        width: 95%;
+        padding: 5%;
+    }
+
+    .login-form-control,
+    .login-form-button {
+        width: 300px;
+    }
+
+    .login-password-container {
+        width: 100%;
+    }
+
+    .login-google-button,
+    .login-facebook-button {
+        width: 300px;
+    }
+}
+
+@media (min-width: 461px) and (max-width: 768px) {
+    .login-container {
+        padding: 20px;
+    }
+
+    .login-form-control,
+    .login-form-button {
+        width: 300px;
+    }
+
+    .login-password-container {
+        width: 300px;
+    }
+
+    .login-google-button,
+    .login-facebook-button {
+        width: 300px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .login-container {
+        padding: 40px;
+    }
+
+    .login-form-control,
+    .login-form-button {
+        width: 300px;
+    }
+
+    .login-password-container {
+        width: 300px;
+    }
+
+    .login-google-button,
+    .login-facebook-button {
+        width: 300px;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1440px) {
+    .login-container {
+        padding: 40px;
+    }
+
+    .login-form-control,
+    .login-form-button {
+        width: 300px;
+    }
+
+    .login-password-container {
+        width: 300px;
+    }
+
+    .login-google-button,
+    .login-facebook-button {
+        width: 300px;
+    }
+}
+
+@media (min-width: 1441px) {
+    .login-container {
+        padding: 40px;
+    }
+
+    .login-form-control,
+    .login-form-button {
+        width: 300px;
+    }
+
+    .login-password-container {
+        width: 300px;
+    }
+
+    .login-google-button,
+    .login-facebook-button {
+        width: 300px;
+    }
+}
+
+.login-main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 9% auto;
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: white;
+    border-radius: 10px;
+    align-items: center;
+}
+
+.login-logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    align-items: center;
+}
+
+.login-title {
+    text-align: center;
+}
+
+.login-form-control {
+    padding: 2%;
+    font-size: 16px;
+}
+
+.login-show-or-hide-password-button {
+    border-color: rgb(220, 220, 220);
+    background-color: transparent;
+}
+
+.login-show-or-hide-password-button:hover,
+.login-show-or-hide-password-button:active {
+    border-color: rgb(220, 220, 220) !important;
+    background-color: rgb(170, 170, 170) !important;
+}
+
+.login-form-button {
+    padding: 2%;
+    font-size: 16px;
+    border-color: green;
+    background-color: green;
+    color: white;
+}
+
+.login-form-button:hover {
+    border-color: rgb(0, 77, 0);
+    background-color: rgb(0, 77, 0);
+}
+
+.login-or-text {
+    font-size: 20px;
+}
+
+.login-button-container {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.login-google-button {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    padding: 2%;
+    font-size: 16px;
+    border-color: rgb(219, 68, 55);
+    background-color: rgb(219, 68, 55);
+    color: white;
+}
+
+.login-google-button:hover {
+    border-color: rgb(179, 55, 44);
+    background-color: rgb(179, 55, 44);
+}
+
+.login-facebook-button {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    padding: 2%;
+    font-size: 16px;
+    border-color: rgb(24, 119, 242);
+    ;
+    background-color: rgb(24, 119, 242);
+    ;
+    color: white;
+}
+
+.login-facebook-button:hover {
+    border-color: rgb(20, 96, 194);
+    background-color: rgb(20, 96, 194);
+}
+
+.login-link {
+    text-decoration: none;
+    color: black;
+}

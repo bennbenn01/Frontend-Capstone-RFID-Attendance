@@ -1,0 +1,113 @@
+@media (max-width: 320px) {
+
+}
+
+@media (min-width: 321px) and (max-width: 425px) {
+    
+}
+
+@media (min-width: 426px) and (max-width: 768px) {
+
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    
+}
+
+@media (min-width: 1025px) and (max-width: 1440px) {
+
+}
+
+@media (min-width: 1441px) {
+
+}
+
+.payment-main-container{
+    display: flex;
+    flex-direction: column;
+    margin: 2%;
+    gap: 15px;
+}
+
+.payment-search-container{
+    display: flex; 
+    flex-direction: column;
+    gap: 10px; 
+    width: 100%;
+    position: relative;
+}
+
+.payment-search-suggestion-dropdown-menu{
+    background-color: rgb(220, 220, 220);
+    width: 100% !important;
+    max-height: 200px !important;
+    overflow-y: auto;
+    min-width: 0 !important; 
+    box-sizing: border-box;
+}
+
+.payment-table-container{
+    max-height: 600px;
+    overflow-y: auto !important;  
+}
+
+.payment-table{
+    text-align: center;
+    table-layout: fixed;
+}
+
+.payment-table-not-paid-row td{
+    cursor: pointer;
+    background-color:rgb(220, 53, 69);
+    border-color: rgb(220, 53, 69);
+    color: white;
+}
+
+.payment-table-paid-row td{
+    background-color:rgb(40, 167, 69);
+    border-color: rgb(40, 167, 69);
+    color: white;
+}
+
+.payment-table-row td,
+.payment-table-not-paid-row td,
+.payment-table-paid-row td{
+    vertical-align: middle;
+}
+
+.payment-listgroup-container {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    gap: 10px;
+}
+
+.payment-listgroup-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.payment-listgroup-label {
+    display: flex;
+    align-self: center;
+    font-weight: bold;
+}
+
+.payment-listgroup-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.payment-listgroup-not-paid-item {
+    cursor: pointer;
+    background-color: rgb(220, 53, 69);
+    border-color: rgb(220, 53, 69);
+    color: white;
+}
+
+.payment-listgroup-paid-item {
+    background-color: rgb(40, 167, 69);
+    border-color: rgb(40, 167, 69);
+    color: white;
+}

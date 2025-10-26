@@ -1,0 +1,235 @@
+@media (max-width: 320px) {
+    .about-us-image-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .footer-main-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 25px;
+    }
+
+    .footer-social-media-text {
+        text-align: center;
+    }
+
+    .about-us-iframe {
+        width: 100%;
+        height: 400px;
+    }
+}
+
+@media (min-width: 321px) and (max-width: 425px) {
+    .about-us-image-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .footer-main-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 25px;
+    }
+
+    .footer-social-media-text {
+        text-align: center;
+    }
+
+    .about-us-iframe {
+        width: 100%;
+        height: 400px;
+    }
+}
+
+@media (min-width: 426px) and (max-width: 590px) {
+    .about-us-image-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .footer-main-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 25px;
+    }
+
+    .footer-social-media-text {
+        text-align: center;
+    }
+
+    .about-us-iframe {
+        width: 100%;
+        height: 400px;
+    }
+}
+
+@media (min-width: 591px) and (max-width: 768px) {
+    .about-us-image-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .footer-main-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 25px;
+    }
+
+    .footer-social-media-text {
+        text-align: center;
+    }
+
+    .about-us-iframe {
+        width: 450px;
+        height: 400px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .about-us-image-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .footer-main-container {
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .about-us-iframe {
+        width: 450px;
+        height: 400px;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1440px) {
+    .about-us-image-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .footer-main-container {
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .about-us-iframe {
+        width: 450px;
+        height: 400px;
+    }
+}
+
+@media (min-width: 1441px) {
+    .about-us-image-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .footer-main-container {
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .about-us-iframe {
+        width: 450px;
+        height: 400px;
+    }
+}
+
+.about-us-main-container {
+    display: flex;
+    flex-direction: column;
+    margin: 3%;
+    gap: 15px;
+}
+
+.about-us-text {
+    text-align: center;
+    color: white;
+}
+
+.about-us-details-container {
+    padding: 2%;
+    border: 2px solid white;
+}
+
+.about-us-sub-image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 5px;
+}
+
+.about-us-sub-image-text {
+    color: white;
+    font-weight: bold;
+}
+
+.footer-main-container {
+    background-color: rgb(30, 144, 175);
+    padding: 2%;
+}
+
+.footer-contact-details-container {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
+.footer-contact-text {
+    color: white;
+    font-weight: bold;
+}
+
+.footer-contact-sub-details {
+    display: inherit;
+    gap: 5px;
+}
+
+.footer-contact-sub-details span:nth-child(2) {
+    color: white;
+}
+
+.footer-social-media-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.footer-social-media-text {
+    color: white;
+    font-weight: bold;
+}
+
+.footer-social-media-logo {
+    display: flex;
+    align-self: center;
+    gap: 5px;
+}
+
+.footer-google-logo,
+.footer-facebook-logo {
+    border: 1px solid white;
+    cursor: pointer;
+    padding: 5%;
+}

@@ -1,0 +1,111 @@
+@media (max-width: 320px) {}
+
+@media (min-width: 321px) and (max-width: 425px) {}
+
+@media (min-width: 426px) and (max-width: 768px) {}
+
+@media (min-width: 769px) and (max-width: 1024px) {}
+
+@media (min-width: 1025px) and (max-width: 1440px) {}
+
+@media (min-width: 1441px) {}
+
+.manage-users-main-container {
+    display: flex;
+    flex-direction: column;
+    margin: 2%;
+    gap: 15px;
+}
+
+.manage-users-search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    position: relative;
+}
+
+.manage-users-search-suggestion-dropdown-menu {
+    background-color: rgb(220, 220, 220);
+    width: 100% !important;
+    max-height: 200px !important;
+    overflow-y: auto;
+    min-width: 0 !important;
+    box-sizing: border-box;
+}
+
+.manage-users-table-container {
+    max-height: 600px;
+    overflow-y: auto !important;
+}
+
+.manage-users-table {
+    text-align: center;
+    table-layout: fixed;
+}
+
+.manage-users-table-row td {
+    vertical-align: middle;
+}
+
+.manage-users-table-header th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.manage-users-table-data-driver-image {
+    border: 1px solid black;
+    border-radius: 11px;
+}
+
+.manage-users-table-data-dropdown-toggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.manage-users-table-data-dropdown-menu {
+    position: fixed !important;
+    z-index: 9999 !important;
+}
+
+.manage-users-listgroup-container {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    gap: 10px;
+}
+
+.manage-users-listgroup-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.manage-users-listgroup-label {
+    display: flex;
+    align-self: center;
+    font-weight: bold;
+}
+
+.manage-users-listgroup-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.manage-users-listgroup-data-dropdown-toggle {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.manage-users-listgroup-data-dropdown-menu {
+    position: fixed !important;
+    z-index: 9999 !important;
+    width: 100%;
+}

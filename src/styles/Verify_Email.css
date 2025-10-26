@@ -1,0 +1,47 @@
+@media (max-width: 320px) {}
+
+@media (min-width: 321px) and (max-width: 425px) {}
+
+@media (min-width: 426px) and (max-width: 768px) {}
+
+@media (min-width: 769px) and (max-width: 1024px) {}
+
+@media (min-width: 1025px) and (max-width: 1440px) {}
+
+@media (min-width: 1441px) {}
+
+.verify-email-main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 9% auto;
+}
+
+.verify-email-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 40px;
+    margin: 5%;
+    background-color: white;
+    border-radius: 10px;
+    align-items: center;
+}
+
+.verify-email-text {
+    text-align: center;
+}
+
+.verify-email-form {
+    width: 100%;
+}
+
+.verify-email-form-button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 2%;
+    font-size: 16px;
+    border-color: green;
+    background-color: green;
+    color: white;
+}

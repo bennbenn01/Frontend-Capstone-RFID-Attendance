@@ -1,0 +1,122 @@
+@media (max-width: 320px) {
+    .header-tab-container {
+        display: none;
+    }
+
+    .header-offcanvas-body-container {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+@media (min-width: 321px) and (max-width: 425px) {
+    .header-tab-container {
+        display: none;
+    }
+
+    .header-offcanvas-body-container {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+@media (min-width: 426px) and (max-width: 480px) {
+    .header-tab-container {
+        display: none;
+    }
+
+    .header-offcanvas-body-container {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .header-tab-container {
+        display: flex;
+        gap: 10px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .header-tab-container {
+        display: flex;
+        gap: 10px;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1440px) {
+    .header-tab-container {
+        display: flex;
+        gap: 10px;
+    }
+}
+
+@media (min-width: 1441px) {
+    .header-tab-container {
+        display: flex;
+        gap: 10px;
+    }
+}
+
+.header-main-container {
+    padding: 10px 1%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-image-click {
+    margin: 10%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.header-nav-link {
+    color: white;
+}
+
+.header-nav-link:hover {
+    color: grey;
+}
+
+.header-nav-link.active:hover {
+    color: rgb(190, 190, 190);
+}
+
+.header-dropdown-toggle {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+.header-dropdown-toggle:hover {
+    color: grey;
+}
+
+.header-offcanvas-dropdown-container {
+    width: 100%;
+}
+
+.header-offcanvas-dropdown-toggle {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    padding-left: 14px;
+    color: rgb(0, 110, 255);
+    text-align: left;
+    width: 100%;
+}
+
+.header-offcanvas-dropdown-toggle:active,
+.header-offcanvas-dropdown-toggle:focus {
+    color: rgb(0, 110, 255) !important;
+}
+
+.header-offcanvas-dropdown-menu {
+    width: 100%;
+}

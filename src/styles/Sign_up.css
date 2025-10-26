@@ -1,0 +1,261 @@
+@media (min-width: 320px) and (max-width: 375px) {
+    .sign-up-container {
+        width: 95%;
+        padding: 5%;
+    }
+
+    .sign-up-form-container {
+        width: 100%;
+    }
+
+    .sign-up-form-control,
+    .sign-up-form-button,
+    .sign-up-form-google-button,
+    .sign-up-form-facebook-button {
+        width: 250px;
+    }
+
+    .sign-up-password-container {
+        width: 250px;
+    }
+}
+
+@media (min-width: 376px) and (max-width: 425px) {
+    .sign-up-container {
+        width: 95%;
+        padding: 5%;
+    }
+
+    .sign-up-form-container {
+        width: 100%;
+    }
+
+    .sign-up-form-control,
+    .sign-up-form-button,
+    .sign-up-form-google-button,
+    .sign-up-form-facebook-button {
+        width: 300px;
+    }
+
+    .sign-up-password-container {
+        width: 300px;
+    }
+}
+
+@media (min-width: 426px) and (max-width: 768px) {
+    .sign-up-container {
+        padding: 40px;
+    }
+
+    .sign-up-form-control,
+    .sign-up-form-button,
+    .sign-up-form-google-button,
+    .sign-up-form-facebook-button {
+        width: 300px;
+    }
+
+    .sign-up-password-container {
+        width: 300px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .sign-up-container {
+        padding: 40px;
+    }
+
+    .sign-up-form-control,
+    .sign-up-form-button,
+    .sign-up-form-google-button,
+    .sign-up-form-facebook-button {
+        width: 300px;
+    }
+
+    .sign-up-password-container {
+        width: 300px;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1440px) {
+    .sign-up-container {
+        padding: 40px;
+    }
+
+    .sign-up-form-control,
+    .sign-up-form-button,
+    .sign-up-form-google-button,
+    .sign-up-form-facebook-button {
+        width: 300px;
+    }
+
+    .sign-up-password-container {
+        width: 300px;
+    }
+}
+
+@media (min-width: 1441px) {
+    .sign-up-container {
+        padding: 40px;
+    }
+
+    .sign-up-form-control,
+    .sign-up-form-button,
+    .sign-up-form-google-button,
+    .sign-up-form-facebook-button {
+        width: 300px;
+    }
+
+    .sign-up-password-container {
+        width: 300px;
+    }
+}
+
+.sign-up-main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 3% auto;
+}
+
+.sign-up-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    background-color: white;
+    border-radius: 10px;
+    align-items: center;
+}
+
+.sign-up-logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.sign-up-form-main-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sign-up-form-title {
+    font-size: 18px;
+}
+
+.sign-up-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    align-items: center;
+}
+
+.sign-up-title {
+    text-align: center;
+}
+
+.sign-up-form-control {
+    padding: 2%;
+    font-size: 16px;
+}
+
+.sign-up-name-duplication {
+    color: red !important;
+}
+
+.sign-up-form-or-text {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    font-size: 20px;
+}
+
+.sign-up-form-control-password {
+    padding: 2%;
+    font-size: 16px;
+    border-radius: 5px 0 0 5px;
+}
+
+.sign-up-password-live-validate .form-text {
+    display: block !important;
+}
+
+.sign-up-password-live-validate .valid {
+    color: green !important;
+}
+
+.sign-up-password-live-validate .invalid {
+    color: red !important;
+}
+
+.sign-up-form-control-password-button {
+    border-color: rgb(220, 220, 220);
+    background-color: transparent;
+}
+
+.sign-up-form-control-password-button:hover,
+.sign-up-form-control-password-button:focus {
+    border-color: rgb(220, 220, 220) !important;
+    background-color: rgb(170, 170, 170) !important;
+}
+
+.sign-up-form-button {
+    padding: 2%;
+    font-size: 16px;
+    border-color: green;
+    background-color: green;
+    color: white;
+}
+
+.sign-up-form-button:hover {
+    border-color: rgb(0, 77, 0);
+    background-color: rgb(0, 77, 0);
+}
+
+.sign-up-form-button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.sign-up-form-google-button {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    padding: 2%;
+    font-size: 16px;
+    border-color: rgb(219, 68, 55);
+    background-color: rgb(219, 68, 55);
+    color: white;
+}
+
+.sign-up-form-google-button:hover {
+    border-color: rgb(179, 55, 44);
+    background-color: rgb(179, 55, 44);
+}
+
+.sign-up-form-facebook-button {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    padding: 2%;
+    font-size: 16px;
+    border-color: rgb(24, 119, 242);
+    background-color: rgb(24, 119, 242);
+    color: white;
+}
+
+.sign-up-form-facebook-button:hover {
+    border-color: rgb(20, 96, 194);
+    background-color: rgb(20, 96, 194);
+}
+
+.sign-up-link {
+    text-decoration: none;
+    color: black;
+}

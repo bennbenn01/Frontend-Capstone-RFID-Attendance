@@ -1,0 +1,93 @@
+@media (max-width: 320px) {}
+
+@media (min-width: 321px) and (max-width: 425px) {}
+
+@media (min-width: 426px) and (max-width: 768px) {}
+
+@media (min-width: 769px) and (max-width: 1024px) {}
+
+@media (min-width: 1025px) and (max-width: 1440px) {}
+
+@media (min-width: 1441px) {}
+
+.data-analytics-main-container {
+    display: flex;
+    flex-direction: column;
+    margin: 2%;
+    gap: 15px;
+}
+
+.data-analytics-search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    position: relative;
+}
+
+.data-analytics-search-suggestion-dropdown-menu {
+    background-color: rgb(220, 220, 220);
+    width: 100% !important;
+    max-height: 200px !important;
+    overflow-y: auto;
+    min-width: 0 !important;
+    box-sizing: border-box;
+}
+
+.data-analytics-driver-att-container {
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    gap: 10px;
+    background-color: rgb(220, 220, 220);
+    padding: 5%;
+}
+
+.data-analytics-form-text {
+    color: white;
+    display: flex;
+    align-self: center;
+    justify-self: center;
+}
+
+.data-analytics-datepicker-container-1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+}
+
+.data-analytics-datepicker-container-2 {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+}
+
+.data-analytics-datepicker {
+    width: 100%;
+}
+
+.data-analytics-button-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.data-analytics-recharts-container {
+    background-color: rgb(220, 220, 220);
+}
+
+.data-analytics-legend-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.data-analytics-legend-text-1 {
+    color: green;
+}
+
+.data-analytics-legend-text-2 {
+    color: red;
+}

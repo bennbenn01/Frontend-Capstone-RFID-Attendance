@@ -1,0 +1,105 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  margin: 0 auto;
+  min-width: 320px;
+  height: 100%;
+  overflow: hidden;
+  overflow-y: auto !important;
+  font-family: sans-serif;
+  background-color: rgb(5, 113, 157) !important;
+}
+
+.form-text {
+  font-weight: bold;
+  color: black;
+}
+
+.dropdown-toggle::after {
+  display: none;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+}
+
+.pagination li {
+  margin: 0 4px;
+  cursor: pointer;
+  border: 1px solid white;
+}
+
+.pagination li a {
+  display: block;
+  padding: 5px 10px;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: black;
+}
+
+.pagination li.active {
+  background-color: white !important;
+  border-color: white !important;
+}
+
+.pagination li:not(.active) {
+  border-color: white !important;
+  color: white !important;
+}
+
+.pagination .prev,
+.pagination .next {
+  display: none;
+}
+
+.react-datepicker__portal-overlay {
+  background-color: transparent !important;
+}
+
+.react-datepicker__portal {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  box-shadow: none !important;
+}
+
+.react-datepicker-time__caption {
+  font-size: 18px !important;
+}
+
+.react-datepicker-time__input input {
+  font-size: 18px !important;
+  padding: 10px;
+  margin-top: 5px;
+  margin-right: 10px;
+  height: 40px;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  appearance: textfield;
+}
+
+.modal,
+.modal-backdrop {
+  position: fixed !important;
+  z-index: 9999 !important;
+}
+
+body.modal-open .about-us-main-container,
+body.modal-open .payment-main-container {
+  overflow: visible !important;
+}

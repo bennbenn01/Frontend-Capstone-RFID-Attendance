@@ -1,0 +1,23 @@
+.custom-tooltip-main-container{
+    background-color: #ffff; 
+    padding: 10px;
+    padding-bottom: 0;
+    border: 1px solid #cccc;
+}
+
+.driver-text,
+.butaw-text,
+.boundary-text,
+.paid-text,
+.not-paid-text{
+    display: flex; 
+    gap: 5px;
+}
+
+.paid-text{
+    color: green;
+}
+
+.not-paid-text{
+    color: red;
+}
