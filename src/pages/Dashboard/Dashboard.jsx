@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
-import { Form, Button, Image, Table, Dropdown, InputGroup, OverlayTrigger, Tooltip, ListGroup } from 'react-bootstrap'
+import { Form, Button, Image, Table, Dropdown, InputGroup, OverlayTrigger, Tooltip, ListGroup, Alert } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { showModal, hideModal, setPaymentFormData } from '../../store/slices/modalsSlice'
-import { dashboardTable } from '../../store/api/dashboardThunks'
+import { dashboardTable, dashboardDriverInfo } from '../../store/api/dashboardThunks'
 import { setWindowWidth, setCurrentPage, clearError } from '../../store/slices/dashboardSlice'
 import { paymentButaw, paymentBoundary, paymentBothPayment } from '../../store/api/paymentThunks'
 import { dashboardSearchResults } from '../../store/queries/dashboardQueries'
@@ -38,8 +38,10 @@ export default function Dashboard() {
     const [activeSearchQuery, setActiveSearchQuery] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
     const [searchTablePage, setSearchTablePage] = useState(1);
+    const [notifications, setNotifications] = useState([]);
 
-    const { drivers, currentPage, error, totalAttendance, totalDrivers, totalButaw, totalBoundary , totalPaid, windowWidth } = useSelector((state) => state.dashboard);
+    const { drivers, driverInfo, currentPage, error, totalAttendance, totalDrivers, totalButaw, totalBoundary , totalPaid, windowWidth } = useSelector((state) => state.dashboard);
+    const { role } = useSelector((state) => state.auth);
     const { paymentFormData } = useSelector((state) => state.modal);
     const { dashboardFilters, dashboardSelectedFields, dashboardSelectedFilters } = useSelector((state) => state.modal);
     const { show, title, message } = useSelector((state) => state.modal);
@@ -51,6 +53,10 @@ export default function Dashboard() {
         totalBoundary,
         totalPaid
     }
+
+    useEffect(() => {
+        dispatch(dashboardDriverInfo());
+    }, [dispatch])
 
     useEffect(() => {
         const handleResize = () => {
@@ -124,12 +130,22 @@ export default function Dashboard() {
             }
         }
 
+        const handlePaymentNotif = (data) => {
+            setNotifications(prev => [...prev, data]);
+        }
+
+        const handleInActiveNotif = (data) => {
+            setNotifications(prev => [...prev, data]);
+        }
+
         socket.on('updated', handleUpdated);
         socket.on('attendance:timein', handleUpdated);
         socket.on('attendance:logout-completed', handleTimeOut);
         socket.on('updated_payment_butaw', handleUpdated);
         socket.on('updated_payment_boundary', handleUpdated);
         socket.on('updated_both_payments', handleUpdated);
+        socket.on('payment-reminder', handlePaymentNotif);
+        socket.on('inactive-driver', handleInActiveNotif);
 
         return () => {
             socket.off('updated', handleUpdated);
@@ -138,6 +154,8 @@ export default function Dashboard() {
             socket.off('updated_payment_butaw', handleUpdated);
             socket.off('updated_payment_boundary', handleUpdated);
             socket.off('updated_both_payments', handleUpdated);
+            socket.off('payment-reminder', handlePaymentNotif);
+            socket.off('inactive-driver', handleInActiveNotif);
         }
     }, [dispatch, activeSearchQuery, currentPage]);
 
@@ -379,6 +397,23 @@ export default function Dashboard() {
         }
     }
 
+    const handleInvoiceClick = () => {
+        dispatch(showModal({ 
+            title: 'Invoice Option',
+            message: 'Options to open the invoice.'
+        }));
+    }
+
+    const handleAlternativeClick = () => {
+        navigate('/alternative-attendance')
+    }
+
+    const handleRequestLeave = () => {
+        dispatch(showModal({ 
+            title: 'Request Leave' 
+        }));
+    }
+
     const handleHideModal = () => {
         dispatch(hideModal());
         dispatch(clearError());
@@ -392,144 +427,229 @@ export default function Dashboard() {
 
     return (
         <>
-            <div className='dashboard-main-container'>
-                <div className='dashboard-search-container'>
-                    <Form >
-                        <InputGroup>
-                            <Button onClick={handleFilterClick}>
-                                <Image
-                                    src={filter}
-                                    alt='Filter'
-                                    width={20}
-                                    height={20}
+            {role === 'super-admin' || role === 'admin' && (
+                <div className='dashboard-main-container'>
+                    <div className='dashboard-search-container'>
+                        <Form >
+                            <InputGroup>
+                                <Button onClick={handleFilterClick}>
+                                    <Image
+                                        src={filter}
+                                        alt='Filter'
+                                        width={20}
+                                        height={20}
+                                    />
+                                </Button>
+
+                                <Form.Control
+                                    type='text'
+                                    placeholder='Search Driver'
+                                    name='query'
+                                    value={searchInput}
+                                    onChange={handleSearchChange}
+                                    onFocus={() => {
+                                        if (searchInput && debouncedQuery) setShowDropdown(true);
+                                    }}
                                 />
-                            </Button>
 
-                            <Form.Control
-                                type='text'
-                                placeholder='Search Driver'
-                                name='query'
-                                value={searchInput}
-                                onChange={handleSearchChange}
-                                onFocus={() => {
-                                    if (searchInput && debouncedQuery) setShowDropdown(true);
-                                }}
-                            />
+                                <Button onClick={handleSearchSubmit}>
+                                    <Image src={search} alt='Search' width={20} height={20} />
+                                </Button>
+                            </InputGroup>
+                        </Form>
 
-                            <Button onClick={handleSearchSubmit}>
-                                <Image src={search} alt='Search' width={20} height={20} />
-                            </Button>
-                        </InputGroup>
-                    </Form>
+                        <div>
+                            {showDropdown && (
+                                <>
+                                    <Dropdown.Menu
+                                        show
+                                        className='dashboard-search-suggestion-dropdown-menu'
+                                        ref={dropdownRef}>
+                                        {isLoading && <Dropdown.Item>Loading...</Dropdown.Item>}
+                                        {uniqueDropdownResults.map((data, index) => {
+                                            const field = data._matchedField;
+                                            const value = data[field];
+                                            const count = data._count;
 
-                    <div>
-                        {showDropdown && (
-                            <>
-                                <Dropdown.Menu
-                                    show
-                                    className='dashboard-search-suggestion-dropdown-menu'
-                                    ref={dropdownRef}>
-                                    {isLoading && <Dropdown.Item>Loading...</Dropdown.Item>}
-                                    {uniqueDropdownResults.map((data, index) => {
-                                        const field = data._matchedField;
-                                        const value = data[field];
-                                        const count = data._count;
-
-                                        return (
-                                            <Dropdown.Item
-                                                key={data.id || index}
-                                                onClick={() => handleSearchClick(data)}>
-                                                {value}
-                                                {count > 1 && ` - (${count} results)`}
-                                            </Dropdown.Item>
-                                        );
-                                    })}
-                                    {!isLoading && dropdownFilteredResults.length === 0 && <Dropdown.Item>No results found.</Dropdown.Item>}
-                                </Dropdown.Menu>
-                            </>
-                        )}
+                                            return (
+                                                <Dropdown.Item
+                                                    key={data.id || index}
+                                                    onClick={() => handleSearchClick(data)}>
+                                                    {value}
+                                                    {count > 1 && ` - (${count} results)`}
+                                                </Dropdown.Item>
+                                            );
+                                        })}
+                                        {!isLoading && dropdownFilteredResults.length === 0 && <Dropdown.Item>No results found.</Dropdown.Item>}
+                                    </Dropdown.Menu>
+                                </>
+                            )}
+                        </div>
                     </div>
-                </div>
 
-                <div className='dashboard-summary-container'>
-                    <div className='dashboard-sub-summary-1'>
-                        <div className='dashboard-sub-summary-1-text'>
-                            <span>Total's Attendance</span>
-                            <span>{summary.totalAttendance || 0}</span>
-                        </div>
+                    <div className='dashboard-summary-container'>
+                        <div className='dashboard-sub-summary-1'>
+                            <div className='dashboard-sub-summary-1-text'>
+                                <span>Total's Attendance</span>
+                                <span>{summary.totalAttendance || 0}</span>
+                            </div>
 
+                            {windowWidth > 700 && (
+                                <Image
+                                    src={card_tap}
+                                    alt='card_tap'
+                                    width={50}
+                                    height={50}/>
+                            )}
+                        </div> 
+
+                        <div className='dashboard-sub-summary-2'>
+                            <div className='dashboard-sub-summary-2-text'>
+                                <span>Total Driver's</span>
+                                <span>{summary.totalDrivers || 0}</span>
+                            </div>
+            
+                            {windowWidth > 700 && (
+                                <Image
+                                    src={group_of_drivers}
+                                    alt='drivers'
+                                    width={50}
+                                    height={50}/>
+                            )}
+                        </div> 
+
+                        <div className='dashboard-sub-summary-3'>
+                            <span>Total Payments</span>
+
+                            <div className='dashboard-sub-summary-3-text'>
+                                <span>Butaw</span>
+                                <span>{summary.totalButaw || 0}</span>
+                            </div>
+
+                            <div className='dashboard-sub-summary-3-text'>
+                                <span>Boundary</span>
+                                <span>{summary.totalBoundary || 0}</span>
+                            </div>
+
+                            <div className='dashboard-sub-summary-3-text'>
+                                <span>Total Paid</span>
+                                <span>{summary.totalPaid || 0}</span>
+                            </div>
+                        </div>                                                                        
+                    </div>
+
+                    <div className='dashboard-table-container'>
                         {windowWidth > 700 && (
-                            <Image
-                                src={card_tap}
-                                alt='card_tap'
-                                width={50}
-                                height={50}/>
+                            <Table className='dashboard-table' hover>
+                                <thead className='dashboard-table-header'>
+                                    <tr>
+                                        <th>Driver Image</th>
+                                        <th>Driver ID</th>
+                                        <th>Driver Name</th>
+                                        <th>Contact No.</th>
+                                        <th>Plate No.</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody className='dashboard-table-body'>
+                                    {Array.isArray(tableDrivers) && tableDrivers.length > 0 ? (
+                                        tableDrivers.map((record, index) => {
+                                            let rowClass = 'dashboard-table-row';
+
+                                            if (record.paid === 'Not Paid') {
+                                                rowClass = 'dashboard-not-paid-row';
+                                            } else {
+                                                rowClass = 'dashboard-paid-row';
+                                            }
+
+                                            return (
+                                                <tr key={index} className={rowClass}
+                                                    onClick={() => handleTableClick(record)}>
+                                                    <td>
+                                                        <Image
+                                                            src={record?.driver?.driver_img}
+                                                            alt=''
+                                                            className='dashboard-table-data-driver-image'
+                                                            width={70}
+                                                            height={70}
+                                                        />
+                                                    </td>
+
+                                                    <td>
+                                                        <OverlayTrigger
+                                                            overlay={
+                                                                <Tooltip>
+                                                                    {record.driver_id}
+                                                                </Tooltip>
+                                                            }>
+                                                            <span>{record.driver_id}</span>
+                                                        </OverlayTrigger>
+                                                    </td>
+
+                                                    <td>
+                                                        <OverlayTrigger
+                                                            overlay={
+                                                                <Tooltip>
+                                                                    {record.full_name}
+                                                                </Tooltip>
+                                                            }>
+                                                            <span>{record.full_name}</span>
+                                                        </OverlayTrigger>
+                                                    </td>
+
+                                                    <td>
+                                                        <OverlayTrigger
+                                                            overlay={
+                                                                <Tooltip>
+                                                                    {record?.driver?.contact}
+                                                                </Tooltip>
+                                                            }>
+                                                            <span>{record?.driver?.contact}</span>
+                                                        </OverlayTrigger>
+                                                    </td>
+
+                                                    <td>
+                                                        <OverlayTrigger
+                                                            overlay={
+                                                                <Tooltip>
+                                                                    {record?.driver?.plate_no}
+                                                                </Tooltip>
+                                                            }>
+                                                            <span>{record?.driver?.plate_no}</span>
+                                                        </OverlayTrigger>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })
+                                    ) : (
+                                        <tr>
+                                            <td colSpan={5}>No data available</td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </Table>
                         )}
-                    </div> 
 
-                    <div className='dashboard-sub-summary-2'>
-                        <div className='dashboard-sub-summary-2-text'>
-                            <span>Total Driver's</span>
-                            <span>{summary.totalDrivers || 0}</span>
-                        </div>
-           
-                        {windowWidth > 700 && (
-                            <Image
-                                src={group_of_drivers}
-                                alt='drivers'
-                                width={50}
-                                height={50}/>
-                        )}
-                    </div> 
-
-                    <div className='dashboard-sub-summary-3'>
-                        <span>Total Payments</span>
-
-                        <div className='dashboard-sub-summary-3-text'>
-                            <span>Butaw</span>
-                            <span>{summary.totalButaw || 0}</span>
-                        </div>
-
-                        <div className='dashboard-sub-summary-3-text'>
-                            <span>Boundary</span>
-                            <span>{summary.totalBoundary || 0}</span>
-                        </div>
-
-                        <div className='dashboard-sub-summary-3-text'>
-                            <span>Total Paid</span>
-                            <span>{summary.totalPaid || 0}</span>
-                        </div>
-                    </div>                                                                        
-                </div>
-
-                <div className='dashboard-table-container'>
-                    {windowWidth > 700 && (
-                        <Table className='dashboard-table' hover>
-                            <thead className='dashboard-table-header'>
-                                <tr>
-                                    <th>Driver Image</th>
-                                    <th>Driver ID</th>
-                                    <th>Driver Name</th>
-                                    <th>Contact No.</th>
-                                    <th>Plate No.</th>
-                                </tr>
-                            </thead>
-
-                            <tbody className='dashboard-table-body'>
+                        {windowWidth <= 700 && (
+                            <ListGroup className='dashboard-listgroup-container'>
                                 {Array.isArray(tableDrivers) && tableDrivers.length > 0 ? (
                                     tableDrivers.map((record, index) => {
-                                        let rowClass = 'dashboard-table-row';
+                                        let rowClass = 'dashboard-listgroup-item';
 
                                         if (record.paid === 'Not Paid') {
-                                            rowClass = 'dashboard-not-paid-row';
+                                            rowClass = 'dashboard-listgroup-not-paid-item';
                                         } else {
-                                            rowClass = 'dashboard-paid-row';
+                                            rowClass = 'dashboard-listgroup-paid-item';
                                         }
 
-                                        return (
-                                            <tr key={index} className={rowClass}
+                                        return(
+                                            <ListGroup.Item 
+                                                key={index}
+                                                className={rowClass}
                                                 onClick={() => handleTableClick(record)}>
-                                                <td>
+                                                <div className='dashboard-listgroup-row'>
+                                                    <span className='dashboard-listgroup-label'>Driver Image:</span>
+
                                                     <Image
                                                         src={record?.driver?.driver_img}
                                                         alt=''
@@ -537,173 +657,161 @@ export default function Dashboard() {
                                                         width={70}
                                                         height={70}
                                                     />
-                                                </td>
-
-                                                <td>
-                                                    <OverlayTrigger
-                                                        overlay={
-                                                            <Tooltip>
-                                                                {record.driver_id}
-                                                            </Tooltip>
-                                                        }>
-                                                        <span>{record.driver_id}</span>
-                                                    </OverlayTrigger>
-                                                </td>
-
-                                                <td>
-                                                    <OverlayTrigger
-                                                        overlay={
-                                                            <Tooltip>
-                                                                {record.full_name}
-                                                            </Tooltip>
-                                                        }>
-                                                        <span>{record.full_name}</span>
-                                                    </OverlayTrigger>
-                                                </td>
-
-                                                <td>
-                                                    <OverlayTrigger
-                                                        overlay={
-                                                            <Tooltip>
-                                                                {record?.driver?.contact}
-                                                            </Tooltip>
-                                                        }>
-                                                        <span>{record?.driver?.contact}</span>
-                                                    </OverlayTrigger>
-                                                </td>
-
-                                                <td>
-                                                    <OverlayTrigger
-                                                        overlay={
-                                                            <Tooltip>
-                                                                {record?.driver?.plate_no}
-                                                            </Tooltip>
-                                                        }>
-                                                        <span>{record?.driver?.plate_no}</span>
-                                                    </OverlayTrigger>
-                                                </td>
-                                            </tr>
+                                                </div>
+                                                <div className='dashboard-listgroup-row'>
+                                                    <span className='dashboard-listgroup-label'>Driver ID:</span>
+                                                    <span>{record.driver_id}</span>
+                                                </div>
+                                                <div className='dashboard-listgroup-row'>
+                                                    <span className='dashboard-listgroup-label'>Driver Name:</span>
+                                                    <span>{record.full_name}</span>
+                                                </div>
+                                                <div className='dashboard-listgroup-row'>
+                                                    <span className='dashboard-listgroup-label'>Contact No:</span>
+                                                    <span>{record?.driver?.contact}</span>
+                                                </div>
+                                                <div className='dashboard-listgroup-row'>
+                                                    <span className='dashboard-listgroup-label'>Plate No:</span>
+                                                    <span>{record?.driver?.plate_no}</span>
+                                                </div>
+                                            </ListGroup.Item>
                                         );
                                     })
                                 ) : (
-                                    <tr>
-                                        <td colSpan={5}>No data available</td>
-                                    </tr>
+                                    <ListGroup.Item >No data available</ListGroup.Item>
                                 )}
-                            </tbody>
-                        </Table>
-                    )}
+                            </ListGroup>
+                        )}
+                    </div>
 
-                    {windowWidth <= 700 && (
-                        <ListGroup className='dashboard-listgroup-container'>
-                            {Array.isArray(tableDrivers) && tableDrivers.length > 0 ? (
-                                tableDrivers.map((record, index) => {
-                                    let rowClass = 'dashboard-listgroup-item';
+                    <div>
+                        <ReactPaginate
+                            containerClassName='pagination'
+                            previousLabel={null}
+                            previousClassName='prev'
+                            nextLabel={null}
+                            nextClassName='next'
+                            breakLabel='...'
 
-                                    if (record.paid === 'Not Paid') {
-                                        rowClass = 'dashboard-listgroup-not-paid-item';
-                                    } else {
-                                        rowClass = 'dashboard-listgroup-paid-item';
-                                    }
+                            pageCount={tableTotalPages}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={5}
+                            onPageChange={handlePageClick}
+                            forcePage={isSearching
+                                ? Math.min(Math.max(searchTablePage - 1, 0), tableTotalPages -1)
+                                : Math.min(Math.max(currentPage - 1, 0), tableTotalPages - 1)
+                            }
+                            activeClassName='active'
+                            renderOnZeroPageCount={null}
+                        />
+                    </div>
 
-                                    return(
-                                        <ListGroup.Item 
-                                            key={index}
-                                            className={rowClass}
-                                            onClick={() => handleTableClick(record)}>
-                                            <div className='dashboard-listgroup-row'>
-                                                <span className='dashboard-listgroup-label'>Driver Image:</span>
+                    <Modals
+                        show={show}
+                        hide={handleModalClose}
+                        title={title}
+                        message={message}
 
-                                                <Image
-                                                    src={record?.driver?.driver_img}
-                                                    alt=''
-                                                    className='dashboard-table-data-driver-image'
-                                                    width={70}
-                                                    height={70}
-                                                />
-                                            </div>
-                                            <div className='dashboard-listgroup-row'>
-                                                <span className='dashboard-listgroup-label'>Driver ID:</span>
-                                                <span>{record.driver_id}</span>
-                                            </div>
-                                            <div className='dashboard-listgroup-row'>
-                                                <span className='dashboard-listgroup-label'>Driver Name:</span>
-                                                <span>{record.full_name}</span>
-                                            </div>
-                                            <div className='dashboard-listgroup-row'>
-                                                <span className='dashboard-listgroup-label'>Contact No:</span>
-                                                <span>{record?.driver?.contact}</span>
-                                            </div>
-                                            <div className='dashboard-listgroup-row'>
-                                                <span className='dashboard-listgroup-label'>Plate No:</span>
-                                                <span>{record?.driver?.plate_no}</span>
-                                            </div>
-                                        </ListGroup.Item>
-                                    );
-                                })
-                            ) : (
-                                <ListGroup.Item >No data available</ListGroup.Item>
-                            )}
-                        </ListGroup>
-                    )}
-                </div>
-
-                <div>
-                    <ReactPaginate
-                        containerClassName='pagination'
-                        previousLabel={null}
-                        previousClassName='prev'
-                        nextLabel={null}
-                        nextClassName='next'
-                        breakLabel='...'
-
-                        pageCount={tableTotalPages}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={5}
-                        onPageChange={handlePageClick}
-                        forcePage={isSearching
-                            ? Math.min(Math.max(searchTablePage - 1, 0), tableTotalPages -1)
-                            : Math.min(Math.max(currentPage - 1, 0), tableTotalPages - 1)
+                        OK={
+                            title === 'Confirmation Timeout Failed' ||
+                            title === 'Dashboard Failed' ||
+                            title === 'Updated Payment'
                         }
-                        activeClassName='active'
-                        renderOnZeroPageCount={null}
+
+                        handleYesClick={
+                            title === 'Confirmation of Payment of Butaw' ||
+                            title === 'Confirmation of Payment of Boundary' || 
+                            title === 'Confirmation of Both Payments'
+                        }
+                        handleModalYesClick={
+                            title === 'Confirmation of Payment of Butaw' && handlePaymentButawYesClick ||
+                            title === 'Confirmation of Payment of Boundary' && handlePaymentBoundaryYesClick ||
+                            title === 'Confirmation of Both Payments' && handleBothPaymentYesClick
+                        }
+                        handleNoClick={
+                            title === 'Confirmation of Payment of Butaw' ||
+                            title === 'Confirmation of Payment of Boundary' || 
+                            title === 'Confirmation of Both Payments'
+                        }
+
+                        payment_buttons={title === 'Payment' && paymentFormData}
+
+                        filter_data={title === 'Filter' ? dashboardFilters : {}}
+                        filter_buttons={title === 'Filter'}
                     />
                 </div>
+            )}
 
-                <Modals
-                    show={show}
-                    hide={handleModalClose}
-                    title={title}
-                    message={message}
+            {role === 'driver' && (
+                <div className='dashboard-main-container'>
+                    <div>
+                        {notifications.map((notif, index) => (
+                            <Alert key={index} variant='danger'>{notif.message}</Alert>
+                        ))}
 
-                    OK={
-                        title === 'Confirmation Logout Failed' ||
-                        title === 'Dashboard Failed' ||
-                        title === 'Updated Payment'
-                    }
+                        <Button className='dashboard-driver-buttons' onClick={handleInvoiceClick}>Invoice</Button>               
+                    </div>
 
-                    handleYesClick={
-                        title === 'Confirmation of Payment of Butaw' ||
-                        title === 'Confirmation of Payment of Boundary' || 
-                        title === 'Confirmation of Both Payments'
-                    }
-                    handleModalYesClick={
-                        title === 'Confirmation of Payment of Butaw' && handlePaymentButawYesClick ||
-                        title === 'Confirmation of Payment of Boundary' && handlePaymentBoundaryYesClick ||
-                        title === 'Confirmation of Both Payments' && handleBothPaymentYesClick
-                    }
-                    handleNoClick={
-                        title === 'Confirmation of Payment of Butaw' ||
-                        title === 'Confirmation of Payment of Boundary' || 
-                        title === 'Confirmation of Both Payments'
-                    }
+                    <div className="card shadow-sm p-3 mb-4">
+                        <div className="d-flex justify-content-between align-items-center flex-wrap">
 
-                    payment_buttons={title === 'Payment' && paymentFormData}
+                            <div className="d-flex align-items-center gap-3 mb-3 mb-md-0">
+                            <Image
+                                src={driverInfo.driver_img}
+                                alt=""
+                                className='dashboard-driver-image'
+                                width={100}
+                                height={100}
+                            />
 
-                    filter_data={title === 'Filter' ? dashboardFilters : {}}
-                    filter_buttons={title === 'Filter'}
-                />
-            </div>
+                            <div className="d-flex flex-column">
+                                <span className=''>
+                                    <b>Driver ID:</b> {driverInfo.driver_id}
+                                </span>
+
+                                <span className=''>
+                                    <b>Driver Name:</b> {driverInfo.driver_name}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="d-flex justify-content-end align-items-center gap-2">
+                            <Button
+                                className="px-3"
+                                onClick={handleRequestLeave}
+                            >
+                                Request Leave
+                            </Button>
+
+                            <Button
+                                className="px-3"
+                                onClick={handleAlternativeClick}
+                            >
+                                Alternative Attendance
+                            </Button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <Modals
+                        show={show}
+                        hide={handleModalClose}
+                        title={title}
+                        message={message}
+
+                        OK={
+                            title === 'Dashboard Failed' || 
+                            title === 'Request Leave Success'
+                        }
+
+                        invoice_buttons={title === 'Invoice Option'}
+
+                        request_leave_data={title === 'Request Leave'}
+                        request_buttons={title === 'Request Leave'}
+                    />   
+                </div>
+            )}
         </>
     );
 }

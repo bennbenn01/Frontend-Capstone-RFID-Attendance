@@ -1,8 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { dashboardTable } from '../api/dashboardThunks.js'
+import { dashboardTable, dashboardDriverInfo, submitRequestLeave } from '../api/dashboardThunks.js'
 
 const initialState = {
     drivers: [],
+    driverInfo: {
+        driver_img: null,
+        driver_id: '',
+        driver_name: '',
+    },
     dashboardStatus: 'idle',
     error: null,
 
@@ -54,7 +59,24 @@ const dashboardSlice = createSlice({
             .addCase(dashboardTable.rejected, (state, action) => {
                 state.dashboardStatus = 'failed';
                 state.error = action.payload;
-            })     
+            })  
+            
+            .addCase(dashboardDriverInfo.fulfilled, (state, action) => {
+                state.dashboardStatus = 'success';
+                state.driverInfo = action.payload;
+            })
+            .addCase(dashboardDriverInfo.rejected, (state, action) => {
+                state.dashboardStatus = 'failed';
+                state.error = action.payload;
+            })
+
+            .addCase(submitRequestLeave.fulfilled, (state) => {
+                state.dashboardStatus = 'success';
+            })
+            .addCase(submitRequestLeave.rejected, (state, action) => {
+                state.dashboardStatus = 'failed';
+                state.error = action.payload;
+            });            
     }
 });
 

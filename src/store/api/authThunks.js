@@ -1,6 +1,22 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import api from '../../utils/axios'
 
+export const loginSuperUser = createAsyncThunk(
+    'auth/loginSuperUser',
+    async ({ admin_name, password }, { rejectWithValue }) => {
+        try {
+            const response = await api.post(import.meta.env.VITE_APP_SUPER_LOGIN, {
+                admin_name,
+                password
+            });
+            
+            return response.data;
+        } catch (err) {
+            return rejectWithValue(err.response?.data?.message);
+        }
+    }
+);
+
 export const loginUser = createAsyncThunk(
     'auth/loginUser',
     async ({ admin_name, password }, { rejectWithValue }) => {
@@ -17,11 +33,42 @@ export const loginUser = createAsyncThunk(
     }
 );
 
+export const driverLoginUser = createAsyncThunk(
+    'auth/driverLoginUser',
+    async ({ admin_name, password }, { rejectWithValue }) => {
+        try {
+            const response = await api.post(import.meta.env.VITE_APP_DRIVER_LOGIN, {
+                admin_name,
+                password
+            });
+
+            return response.data;
+        } catch (err) {
+            return rejectWithValue(err.response?.data?.message);
+        }
+    }
+);
+
 export const googleLogin = createAsyncThunk(
     'auth/googleLogin',
     async ({ googleId, email }, { rejectWithValue }) => {
         try {
             const response = await api.post(import.meta.env.VITE_APP_GOOGLE_LOGIN, {
+                googleId, email
+            });
+
+            return response.data;
+        } catch (err) {
+            return rejectWithValue(err.response?.data?.message);
+        }
+    }
+);
+
+export const googleDriverLogin = createAsyncThunk(
+    'auth/googleDriverLogin',
+    async ({ googleId, email }, { rejectWithValue }) => {
+        try {
+            const response = await api.post(import.meta.env.VITE_APP_GOOGLE_DRIVER_LOGIN, {
                 googleId, email
             });
 

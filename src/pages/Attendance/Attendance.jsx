@@ -21,7 +21,6 @@ export default function Attendance() {
     const dispatch = useDispatch();
     const dropdownRef = useRef();
     const navigate = useNavigate();
-    const socket = getSocket();
 
     /* eslint-disable-next-line */
     const searchParams = new URLSearchParams(location.search);
@@ -40,6 +39,7 @@ export default function Attendance() {
     const [searchTablePage, setSearchTablePage] = useState(1);
 
     const { drivers, error, currentPage, windowWidth } = useSelector((state) => state.attendance);
+    const { role } = useSelector((state) => state.auth);
     const { paymentFormData } = useSelector((state) => state.modal);
     const { attendanceFilters, attendanceSelectedFields, attendanceSelectedFilters } = useSelector((state) => state.modal);
     const { show, title, message } = useSelector((state) => state.modal);
@@ -118,6 +118,8 @@ export default function Attendance() {
     }, [showDropdown]);
 
     useEffect(() => {
+        const socket = getSocket();
+
         const handleTimeIn = (data) => {
             if (data?.status === 200 && !activeSearchQuery) {
                 dispatch(attendanceTable(currentPage));
@@ -143,7 +145,7 @@ export default function Attendance() {
             socket.off('updated_payment_boundary', handleTimeIn);
             socket.off('updated_both_payments', handleTimeIn);
         }
-    }, [dispatch, activeSearchQuery, socket, currentPage]);
+    }, [dispatch, activeSearchQuery, currentPage]);
 
     const handleSuccessOperation = (title, message) => {
         dispatch(clearError());
@@ -468,7 +470,9 @@ export default function Attendance() {
 
                     <div className={windowWidth > 800 ? 'attendance-option-button-container-1' : 'attendance-option-button-container-2'}>
                         <Button onClick={() => handlePaymentLogs()}>Payment Logs</Button>
-                        <Button onClick={() => handleDataAnalytics()}>Data Analytics</Button>
+                        {(role === 'super-admin' || role === 'admin') && (
+                            <Button onClick={() => handleDataAnalytics()}>Data Analytics</Button>
+                        )}
                     </div>
                 </div>
 
@@ -665,7 +669,7 @@ export default function Attendance() {
                     message={message}
 
                     OK={
-                        title === 'Confirmation Logout Failed' ||
+                        title === 'Confirmation Timeout Failed' ||
                         title === 'Attendance Failed' ||
                         title === 'Updated Payment'
                     }

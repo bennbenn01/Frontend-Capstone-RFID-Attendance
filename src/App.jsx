@@ -13,16 +13,30 @@ import { paymentButaw, paymentBoundary } from './store/api/paymentThunks'
 import PrivateRoute from './hoc/PrivateRoute/PrivateRoute'
 import PrivateVeriftyEmail from './hoc/PrivateVerifyEmail/PrivateVerifyEmail'
 import SocketManager from './hoc/SocketManager/SocketManager'
-import { initializeCsrfToken } from './utils/axios'
 import Header from './components/Header/Header'
 import Modals from './components/Modals/Modals'
 import './App.css'
 
+
+const Home = lazy(() => import('./pages/Home/Home'))
+
+const Admin_Login = lazy(() => import('./pages/Admin_Login/Admin_Login'));
 const Login = lazy(() => import('./pages/Login/Login'))
+const Driver_Login = lazy(() => import('./pages/Driver_Login/Driver_Login'))
+
 const Sign_up = lazy(() => import('./pages/Sign_up/Sign_up'))
+const Driver_Sign_Up = lazy(() => import('./pages/Driver_Sign_up/Driver_Sign_up'))
+
+const Manual_TimeInAndOut = lazy(() => import('./pages/Manual_TimeInAndOut/Manual_TimeInAndOut'))
+
 const Forgot_Password = lazy(() => import('./pages/Forgot_Password/Forgot_Password'))
+const Driver_Forgot_Password = lazy(() => import('./pages/Driver_Forgot_Password/Driver_Forgot_Password'))
+
 const Verify_Email = lazy(() => import('./pages/Verify_Email/Verify_Email'))
+
+const Admin_Dashboard = lazy(() => import('./pages/Admin_Dashboard/Admin_Dashboard'))
 const Dashboard = lazy(() => import('./pages/Dashboard/Dashboard'))
+const Invoice = lazy(() => import('./pages/Invoice/Invoice'))
 const Manage_Users = lazy(() => import('./pages/Manage_Users/Manage_Users'))
 const Logs = lazy(() => import('./pages/Logs/Logs'))
 const Payment = lazy(() => import('./pages/Payment/Payment'))
@@ -41,16 +55,12 @@ const LoadingSpinner = () => {
 function App() {
   const dispatch = useDispatch();
 
-  const { isLoading, isAuthenticated } = useSelector((state) => state.auth);
+  const { isLoading, isAuthenticated, role } = useSelector((state) => state.auth);
   const { confirmLogoutData } = useSelector((state) => state.app);
   const { paymentFormData } = useSelector((state) => state.modal);
   const { show, title, message, error } = useSelector((state) => state.modal);
 
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    initializeCsrfToken();
-  }, [])
 
   useEffect(() => {
     if(error){
@@ -175,9 +185,24 @@ function App() {
 
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
+            <Route path='/home' element={<><Home/></>}/>
+            
+            
+            <Route path='/admin-login' element={<><Admin_Login/></>}/>
+            <Route path='/driver-login' element={<><Driver_Login/></>}/>
             <Route path='/login' element={<><Login/></>}/>
+
+            <Route path='/driver-sign-up' element={<><Driver_Sign_Up/></>}/>
             <Route path='/sign-up' element={<><Sign_up/></>}/>
+            
+            <Route path='/alternative-attendance' element={
+              <PrivateRoute allowedRoles={['driver']}>
+                <Header/><Manual_TimeInAndOut/>
+              </PrivateRoute>
+            }/>
+
             <Route path='/forgot-password' element={<><Forgot_Password/></>}/>
+            <Route path='/driver-forgot-password' element={<><Driver_Forgot_Password/></>}/>
 
             <Route path='/verify-email' element={
               <PrivateVeriftyEmail>
@@ -185,20 +210,32 @@ function App() {
               </PrivateVeriftyEmail>
             }/>
 
+            <Route path='/admin-dashboard' element={
+              <PrivateRoute allowedRoles={['super-admin']}>
+                <Header/><Admin_Dashboard/>
+              </PrivateRoute>
+            }/>
+
             <Route path='/dashboard' element={
-              <PrivateRoute allowedRoles={['admin']}>
+              <PrivateRoute allowedRoles={['admin', 'driver']}>
                 <Header/><Dashboard/>
               </PrivateRoute>
             }/>
 
+            <Route path='/driver-invoice' element={
+              <PrivateRoute allowedRoles={['driver']}>
+                <Header/><Invoice/>
+              </PrivateRoute>
+            }/>
+
             <Route path='/manage-users' element={
-              <PrivateRoute allowedRoles={['admin']}>
+              <PrivateRoute allowedRoles={['super-admin', 'admin']}>
                 <Header/><Manage_Users/>
               </PrivateRoute>
             }/>
 
             <Route path='/logs' element={
-              <PrivateRoute allowedRoles={['admin']}>
+              <PrivateRoute allowedRoles={['super-admin', 'admin', 'driver']}>
                 <Header/><Logs/>
               </PrivateRoute>
             }>
@@ -208,19 +245,21 @@ function App() {
             </Route>
 
             <Route path='/about-us' element={
-                <PrivateRoute allowedRoles={['admin']}>
+                <PrivateRoute allowedRoles={['admin', 'driver']}>
                   <Header/><About_Us/>
                 </PrivateRoute>
             }/>
 
-            <Route path='*' element={<><Login/></>}/>
+            <Route path='*' element={<><Home/></>}/>
           </Routes>
           
-          {isAuthenticated && (
+          {((role === 'super-admin' || role === 'admin') && isAuthenticated) && (
             <Modals
               show={(show && 
                 title === 'Confirmation Timeout' ||
-                title === 'Timeout Complete' 
+                title === 'Timeout Complete' ||
+                title === 'Confirmation Request Leave' || 
+                title === 'Request Leave Confirmed'
               )}
               hide={handleModalClose}
               title={title}
@@ -229,7 +268,9 @@ function App() {
               OK={
                 title === 'Confirmation Timeout Failed' ||
                 title === 'Updated Payment' ||
-                title === 'Timeout Complete'
+                title === 'Timeout Complete' || 
+                title === 'Request Leave Complete' || 
+                title === 'Request Leave Confirmed'
               }
 
               handleYesClick={

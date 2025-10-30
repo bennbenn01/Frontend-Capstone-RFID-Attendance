@@ -12,7 +12,7 @@ export default function SocketManager() {
     const location = useLocation();
     const dispatch = useDispatch();
 
-    const { isAuthenticated } = useSelector((state) => state.auth);
+    const { isAuthenticated, role } = useSelector((state) => state.auth);
     const { confirmLogoutData } = useSelector((state) => state.app);
 
     useEffect(() => {
@@ -44,8 +44,10 @@ export default function SocketManager() {
                 data?.action === 'logout_request' &&
                 !confirmLogoutData
             ) {
-                dispatch(getPendingLogout(data.driver_id)).then(() => {
-                    dispatch(showModal({ title: 'Confirmation Timeout' }));
+                dispatch(getPendingLogout(data.driver_id)).then((actionResult) => {
+                    if (actionResult?.meta?.requestStatus === 'fulfilled') {
+                        dispatch(showModal({ title: 'Confirmation Timeout' }));
+                    }
                 });
             }
         };
@@ -58,19 +60,53 @@ export default function SocketManager() {
                     dispatch(clearConfirmationLogoutData());
                 }, 2000);
             }
-        };
+        }; 
+
+        const handleRequestLeave = (data) => {
+            if (role === 'admin' || role === 'super-admin') {
+                if (data?.action === 'request-leave') {
+                    dispatch(
+                        showModal({ 
+                            title: 'New Leave Request',
+                            message: data?.message || 'A new leave request has been submitted.'
+                        })
+                    );
+                }
+            }
+        }
+
+        const handleRequestLeaveStatus = (data) => {
+            if (role === 'driver') {
+                if (data?.action === 'request-leave-status') {
+                    const currentModalTitle = store.getState().modal.title;
+                    if (currentModalTitle !== 'Request Leave Success') {
+                        dispatch(
+                            showModal({ 
+                                title: 'Request Leave Confirmed',
+                                message: data?.message || 'Your leave request has been submitted.'
+                            })
+                        );
+                    }
+                }
+            }            
+        }
 
         socket.on('attendance:timein', handleTimeIn);
         socket.on('attendance:logout-confirmation', handleLogoutConfirmation);
         socket.on('attendance:logout-completed', handleLogoutCompleted);
+        socket.on('request-leave', handleRequestLeave);
+        socket.on('request-leave-status', handleRequestLeaveStatus);
 
         return () => {
             socket.off('attendance:timein', handleTimeIn);
             socket.off('attendance:logout-confirmation', handleLogoutConfirmation);
             socket.off('attendance:logout-completed', handleLogoutCompleted);
+            socket.off('request-leave', handleRequestLeave);
+            socket.off('request-leave-status', handleRequestLeaveStatus);
+
             disconnectSocket(); 
         };
-    }, [location.pathname, isAuthenticated, dispatch, confirmLogoutData]);
+    }, [location.pathname, isAuthenticated, role, dispatch, confirmLogoutData]);
 
     return null;
 }

@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { attendanceTable } from '../api/attendanceThunks'
+import { 
+    attendanceTable 
+} from '../api/attendanceThunks'
 
 const initialState = {
     drivers: [],
@@ -7,6 +9,8 @@ const initialState = {
     error: null,
 
     windowWidth: window.innerWidth,
+
+
 
     currentPage: 1,
     totalPages: 0

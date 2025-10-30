@@ -20,7 +20,6 @@ export default function Payment() {
     const dispatch = useDispatch();
     const dropdownRef = useRef();
     const navigate = useNavigate();
-    const socket = connectSocket();
 
     /* eslint-disable-next-line */
     const searchParams = new URLSearchParams(location.search);
@@ -117,6 +116,8 @@ export default function Payment() {
     }, [showDropdown]);
 
     useEffect(() => {
+        const socket = connectSocket();
+
         const handleTimeIn = (data) => { 
             if (data?.status === 200 && !activeSearchQuery) {
                 dispatch(attendanceTable(currentPage));
@@ -144,7 +145,7 @@ export default function Payment() {
             socket.off('updated_payment_boundary', handleTimeIn);
             socket.off('updated_both_payments', handleTimeIn);
         }
-    }, [dispatch, activeSearchQuery, socket, currentPage]);
+    }, [dispatch, activeSearchQuery, currentPage]);
 
     const handleSuccessOperation = (title, message) => {
         dispatch(clearError());
@@ -585,7 +586,7 @@ export default function Payment() {
                         )}
 
                         {windowWidth <= 800 && (
-                            <ListGroup className='payment-listgroup-containter'>
+                            <ListGroup className='payment-listgroup-container'>
                                 {Array.isArray(tablePayments) && tablePayments.length > 0 ? (
                                     tablePayments.map((payment, index) => {
                                         let rowClass = 'payment-listgroup-item';
@@ -669,7 +670,7 @@ export default function Payment() {
                     message={message}
 
                     OK={
-                        title === 'Confirmation Logout Failed' ||
+                        title === 'Confirmation Timeout Failed' ||
                         title === 'Payment Failed' ||
                         title === 'Updated Payment'
                     }

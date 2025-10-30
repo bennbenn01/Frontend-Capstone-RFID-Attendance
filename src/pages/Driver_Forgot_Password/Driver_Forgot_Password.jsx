@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Form, Button, Image, Spinner, InputGroup } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { changePass, checkPass, confirmPass } from '../../store/api/forgot_passwordThunks'
+import { driverChangePass, driverCheckPass, driverConfirmPass } from '../../store/api/forgot_passwordThunks'
 import { forgotPassField, setConfirmPassData, clearError } from '../../store/slices/forgot_passwordSlice'
 import { showModal, hideModal } from '../../store/slices/modalsSlice'
 import Modals from '../../components/Modals/Modals'
@@ -27,7 +27,7 @@ export default function Forgot_Password() {
         forgot_pass ?? { status: null, expiresAt: null }
     );
 
-    const { admin_name, reqId, confirmPassData, allow_change_pass, error } = useSelector((state) => state.forgot_password);
+    const { driver_name, reqId, confirmPassData, allow_change_pass, error } = useSelector((state) => state.forgot_password);
     const { show, title, message } = useSelector((state) => state.modal);
 
     const [isPassword, setIsPassword] = useState(false);
@@ -37,14 +37,14 @@ export default function Forgot_Password() {
     const [check, setCheck] = useState(false);
 
     useEffect(() => {
-        if (!check || !admin_name || !reqId || allow_change_pass) return;
+        if (!check || !driver_name || !reqId || allow_change_pass) return;
 
         const interval = setInterval(() => {
-            dispatch(checkPass({ admin_name, reqId })).unwrap();
+            dispatch(driverCheckPass({ driver_name, reqId })).unwrap();
         }, 3000);
 
         return () => clearInterval(interval);
-    }, [dispatch, check, admin_name, reqId, allow_change_pass]);
+    }, [dispatch, check, driver_name, reqId, allow_change_pass]);
 
     useEffect(() => {
         if (allow_change_pass && storedStatus.status !== 'pending') {
@@ -151,7 +151,7 @@ export default function Forgot_Password() {
         setChangeValidated(false);
 
         try {
-            sessionStorage.setItem('name', admin_name);
+            sessionStorage.setItem('name', driver_name);
             const sessionStatus = {
                 status: 'change-pass',
                 expiresAt: Date.now() + 30 * 60 * 1000
@@ -162,7 +162,7 @@ export default function Forgot_Password() {
                 JSON.stringify(sessionStatus)
             );
 
-            await dispatch(changePass({ admin_name })).unwrap();
+            await dispatch(driverChangePass({ driver_name })).unwrap();
 
             setCheck(true);
         } catch (err) {
@@ -187,11 +187,11 @@ export default function Forgot_Password() {
 
         try {
             const dataPayload = {
-                admin_name: sessionStorage.getItem('name'),
+                driver_name: sessionStorage.getItem('name'),
                 ...confirmPassData
             }
 
-            await dispatch(confirmPass(dataPayload)).unwrap();
+            await dispatch(driverConfirmPass(dataPayload)).unwrap();
 
             sessionStorage.clear();
 
@@ -315,7 +315,7 @@ export default function Forgot_Password() {
                                             confirmValidated &&
                                             (
                                                 confirmPassData.confirm_pass.trim() === '' ||
-                                                (confirmPassData.confirm_pass !== confirmPass.change_pass)
+                                                (confirmPassData.confirm_pass !== driverConfirmPass.change_pass)
                                             )
                                         }
                                         required />
@@ -371,12 +371,12 @@ export default function Forgot_Password() {
 
                                 <Form.Control
                                     type='text'
-                                    name='admin_name'
+                                    name='driver_name'
                                     placeholder='Enter username'
-                                    value={admin_name}
+                                    value={driver_name}
                                     onChange={handleChangePassChange}
                                     required
-                                    isInvalid={changeValidated && admin_name.trim() === ''} />
+                                    isInvalid={changeValidated && driver_name.trim() === ''} />
 
                                 <Form.Control.Feedback type='invalid'>
                                     Please enter an valid username.

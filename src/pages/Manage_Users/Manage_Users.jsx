@@ -15,7 +15,8 @@ import {
     hideModal,
     setDeviceFormData,
     setDriverImage,
-    setDriverFormData
+    setDriverFormData,
+    resetAddInfoFormData
 } from '../../store/slices/modalsSlice'
 import { generateRfidUuid } from '../../utils/generateRfidUuid'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -33,7 +34,6 @@ export default function Manage_Users() {
     const dispatch = useDispatch();
     const dropdownRef = useRef(false);
     const navigate = useNavigate();
-    const socket = getSocket();
 
     /* eslint-disable-next-line */
     const searchParams = new URLSearchParams(location.search);
@@ -53,6 +53,7 @@ export default function Manage_Users() {
     const [searchTablePage, setSearchTablePage] = useState(1);
 
     const { drivers, currentPage, error, windowWidth } = useSelector((state) => state.manage_users);
+    const { role } = useSelector((state) => state.auth);
     const { deviceFormData, driverFormData } = useSelector((state) => state.modal);
     const { addInfoFormData } = useSelector((state) => state.modal);
     const { manageUsersFilters, manageUsersSelectedFields, manageUsersSelectedFilters } = useSelector((state) => state.modal);
@@ -132,6 +133,8 @@ export default function Manage_Users() {
     }, [showDropdown]);
 
     useEffect(() => {
+        const socket = getSocket();
+
         const handleUpdated = (data) => {
             if (data?.status === 200 && !activeSearchQuery) {
                 dispatch(manage_usersTable(currentPage));
@@ -151,7 +154,7 @@ export default function Manage_Users() {
             socket.off('updated', handleUpdated);
             socket.off('card_updated', handleCardDevMode);
         }
-    }, [dispatch, activeSearchQuery, socket, currentPage]);
+    }, [dispatch, activeSearchQuery, currentPage]);
 
     const handleSuccessOperation = (title, message) => {
         dispatch(clearError());
@@ -326,6 +329,8 @@ export default function Manage_Users() {
             await dispatch(manage_usersAddInfo(formData)).unwrap();
             handleSuccessOperation('Added Info', 'An new device was created!');
             dispatch(manage_usersTable(currentPage));
+            
+            dispatch(resetAddInfoFormData());
 
             queryClient.invalidateQueries({
                 predicate: (query) => query.queryKey[0] === 'search',
@@ -528,7 +533,9 @@ export default function Manage_Users() {
                         )}
                     </div>
 
-                    <Button onClick={() => handleAddInfoClick()}>Add Info</Button>
+                    {role === 'admin' && (
+                        <Button onClick={() => handleAddInfoClick()}>Add Info</Button>
+                    )}
                 </div>
 
                 <div>
@@ -748,7 +755,7 @@ export default function Manage_Users() {
                     message={message}
 
                     OK={
-                        title === 'Confirmation Logout Failed' ||
+                        title === 'Confirmation Timeout Failed' ||
                         title === 'Manage Users Failed' ||
                         title === 'Manage Devices Failed' ||
                         title === 'Manage Drivers Failed' ||

@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, Link } from 'react-router-dom'
 import { Image, Form, Button, InputGroup } from 'react-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
-import { loginField, clearError } from '../../store/slices/authSlice'
-import { loginUser, googleLogin } from '../../store/api/authThunks'
-import { showModal, hideModal } from '../../store/slices/modalsSlice'
-import Modals from '../../components/Modals/Modals'
 import { useGoogleLogin } from '@react-oauth/google'
+import { driverLoginUser, googleDriverLogin } from '../../store/api/authThunks'
+import { driverLoginField, clearError } from '../../store/slices/authSlice'
+import { showModal, hideModal } from '../../store/slices/modalsSlice'
 import google from '../../assets/google.png'
 import logo from '/Bluman Toda Logo.png'
 import show_button from '../../assets/view.png'
 import hide_button from '../../assets/hide.png'
+import Modals from '../../components/Modals/Modals'
 import '../../styles/Login.css'
 
-export default function Login() {
+export default function Driver_Login() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [validated, setValidated] = useState(false);
@@ -38,20 +38,9 @@ export default function Login() {
         }
     }, [error, dispatch]);
 
-    useEffect(() => {
-        return () => {
-            dispatch(clearError());
-            
-            if (window.errorTimeoutId) {
-                clearTimeout(window.errorTimeoutId);
-                window.errorTimeoutId = null;
-            }
-        }
-    }, [dispatch]);
-
     const handleChange = (e) => {
         const { name, value } = e.target;
-        dispatch(loginField({ field: name, value }));
+        dispatch(driverLoginField({ field: name, value }));
     }
 
     const handleShowOrHideConfirmPassButton = () => {
@@ -71,7 +60,7 @@ export default function Login() {
         setValidated(false);
 
         try {
-            await dispatch(loginUser({ admin_name, password })).unwrap();
+            await dispatch(driverLoginUser({ admin_name, password })).unwrap();
             sessionStorage.clear();
         } catch (err) {
             dispatch(showModal({
@@ -95,7 +84,7 @@ export default function Login() {
                     email: userInfo.email,
                 };
 
-                await dispatch(googleLogin(googleUserData)).unwrap();     
+                await dispatch(googleDriverLogin(googleUserData)).unwrap();     
                 sessionStorage.clear();         
             } catch (err) {
                 dispatch(showModal({
@@ -139,7 +128,7 @@ export default function Login() {
                     </div>
 
                     <h4 className='login-title'>Welcome to Bluman Toda!</h4>
-                    <h5 className='login-title'>Operator Login</h5>
+                    <h5 className='login-title'>Driver Login</h5>
 
                     <Form 
                         className='login-form-container'
@@ -217,11 +206,11 @@ export default function Login() {
                     </div>
 
                     <div>
-                        <Link to='/forgot-password'>Forgot password?</Link>
+                        <Link to='/driver-forgot-password'>Forgot password?</Link>
                     </div>
 
                     <div>
-                        <Link to='/sign-up'
+                        <Link to='/driver-sign-up'
                         className='login-link'>Sign-up</Link>
                     </div>
                 </div>
@@ -239,7 +228,7 @@ export default function Login() {
                         title === 'Password Has Been Changed'
                     }
                 />
-            </div>
+            </div>            
         </>
     );
 }

@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { Image, Form, Button, InputGroup } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { signupField, setSignUpData, clearError } from '../../store/slices/sign_upSlice'
-import { signUpUser, googleSignUp } from '../../store/api/sign_upThunks'
+import { setDriverSignupField, setSignUpData, clearError } from '../../store/slices/sign_upSlice'
+import { signUpDriverUser, googleDriverSignUp } from '../../store/api/sign_upThunks'
 import Modals from '../../components/Modals/Modals'
 import { useQuery } from '@tanstack/react-query'
 import { showModal, hideModal } from '../../store/slices/modalsSlice'
@@ -15,12 +15,12 @@ import show_button from '../../assets/view.png'
 import hide_button from '../../assets/hide.png'
 import '../../styles/Sign_up.css'
 
-export default function Sign_up() {
+export default function Driver_Sign_up() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [validated, setValidated] = useState(false);
     
-    const { signUpData, error } = useSelector((state) => state.sign_up);
+    const { driverSignUpData, error } = useSelector((state) => state.sign_up);
     const { show, title, message } = useSelector((state) => state.modal);
 
     const [isPassword, setIsPassword] = useState(false);
@@ -48,11 +48,11 @@ export default function Sign_up() {
 
     const { data: nameCheckData } = useQuery({
         queryKey: ['form-check', { 
-            fname: signUpData?.fname?.trim(), 
-            lname: signUpData?.lname?.trim()
+            fname: driverSignUpData?.fname?.trim(), 
+            lname: driverSignUpData?.lname?.trim()
         }],
         queryFn: sign_upQueriesFormCheck,
-        enabled: !!(signUpData.fname?.trim() && signUpData.lname?.trim()),
+        enabled: !!(driverSignUpData.fname?.trim() && driverSignUpData.lname?.trim()),
         staleTime: 0,
         gcTime: 0,
         refetchOnMount: true,
@@ -64,7 +64,7 @@ export default function Sign_up() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        dispatch(signupField({ field: name, value }));
+        dispatch(setDriverSignupField({ field: name, value }));
     }
 
     const validatePassword = (password) => {
@@ -110,15 +110,15 @@ export default function Sign_up() {
         setValidated(false);
 
         try {
-            dispatch(setSignUpData({field: 'fname', value: signUpData.fname}));
-            dispatch(setSignUpData({field: 'lname', value: signUpData.lname}));
-            dispatch(setSignUpData({field: 'admin_name', value: signUpData.admin_name}));
-            dispatch(setSignUpData({field: 'email', value: signUpData.email}));
-            dispatch(setSignUpData({field: 'contact', value: signUpData.contact}));
-            dispatch(setSignUpData({field: 'password', value: signUpData.password}));
-            dispatch(setSignUpData({field: 'confirm_pass', value: signUpData.confirm_pass}));
+            dispatch(setSignUpData({field: 'fname', value: driverSignUpData.fname}));
+            dispatch(setSignUpData({field: 'lname', value: driverSignUpData.lname}));
+            dispatch(setSignUpData({field: 'driver_name', value: driverSignUpData.driver_name}));
+            dispatch(setSignUpData({field: 'email', value: driverSignUpData.email}));
+            dispatch(setSignUpData({field: 'contact', value: driverSignUpData.contact}));
+            dispatch(setSignUpData({field: 'password', value: driverSignUpData.password}));
+            dispatch(setSignUpData({field: 'confirm_pass', value: driverSignUpData.confirm_pass}));
 
-            await dispatch(signUpUser(signUpData)).unwrap();
+            await dispatch(signUpDriverUser(driverSignUpData)).unwrap();
             navigate('/verify-email');
         } catch (err) {
             dispatch(showModal({
@@ -144,7 +144,7 @@ export default function Sign_up() {
                     lname: userInfo.family_name
                 };
 
-                await dispatch(googleSignUp(googleUserData)).unwrap();
+                await dispatch(googleDriverSignUp(googleUserData)).unwrap();
                 navigate('/verify-email');                
             } catch (err) {
                 dispatch(showModal({
@@ -187,7 +187,7 @@ export default function Sign_up() {
                     </div>
 
                     <h4 className='sign-up-title'>Sign-up to Bluman Toda!</h4>
-                    <h5 className='sign-up-title'>Operator Sign-up</h5>
+                    <h5 className='sign-up-title'>Driver Sign-up</h5>
 
                     <div className='sign-up-form-main-container'>
                         <div>
@@ -207,21 +207,21 @@ export default function Sign_up() {
                                         placeholder='Enter first name'
                                         className='sign-up-form-control'
                                         name='fname'
-                                        value={signUpData.fname || ''}
+                                        value={driverSignUpData.fname || ''}
                                         onChange={handleChange}
                                         isInvalid={
-                                            validated && (signUpData.fname.trim() === '') ||
+                                            validated && (driverSignUpData.fname.trim() === '') ||
                                             isNameDuplication
                                         }
                                         required/>
 
-                                        {(validated && signUpData.lname.trim() === '') && (
+                                        {(validated && driverSignUpData.lname.trim() === '') && (
                                             <Form.Control.Feedback type='invalid'>
                                                 Please enter an valid first name.
                                             </Form.Control.Feedback>
                                         )}
 
-                                        {(validated && isNameDuplication && signUpData.fname.trim() !== '') && (
+                                        {(validated && isNameDuplication && driverSignUpData.fname.trim() !== '') && (
                                             <Form.Control.Feedback type='invalid'></Form.Control.Feedback>
                                         )}
                                 </Form.Group>
@@ -234,15 +234,15 @@ export default function Sign_up() {
                                         placeholder='Enter last name'
                                         className='sign-up-form-control'
                                         name='lname'
-                                        value={signUpData.lname || ''}
+                                        value={driverSignUpData.lname || ''}
                                         onChange={handleChange}                                        
                                         isInvalid={
-                                            (validated && signUpData.lname.trim() === '') ||
+                                            (validated && driverSignUpData.lname.trim() === '') ||
                                             isNameDuplication
                                         }
                                         required/>
 
-                                    {(validated && signUpData.lname.trim() === '') && (
+                                    {(validated && driverSignUpData.lname.trim() === '') && (
                                         <Form.Control.Feedback type='invalid'>
                                             Please enter an valid last name.
                                         </Form.Control.Feedback>
@@ -262,10 +262,10 @@ export default function Sign_up() {
                                         type='text'
                                         placeholder='Enter username'
                                         className='sign-up-form-control'
-                                        name='admin_name'
-                                        value={signUpData.admin_name || ''}
+                                        name='driver_name'
+                                        value={driverSignUpData.driver_name || ''}
                                         onChange={handleChange}
-                                        isInvalid={validated && signUpData.admin_name.trim() === ''}
+                                        isInvalid={validated && driverSignUpData.driver_name.trim() === ''}
                                         required/>
 
                                     <Form.Control.Feedback type='invalid'>
@@ -281,9 +281,9 @@ export default function Sign_up() {
                                         placeholder='Enter email'
                                         className='sign-up-form-control'
                                         name='email'
-                                        value={signUpData.email || ''}
+                                        value={driverSignUpData.email || ''}
                                         onChange={handleChange}
-                                        isInvalid={validated && signUpData.email.trim() === ''}
+                                        isInvalid={validated && driverSignUpData.email.trim() === ''}
                                         required/>
 
                                     <Form.Control.Feedback type='invalid'>
@@ -299,9 +299,9 @@ export default function Sign_up() {
                                         placeholder='Enter contact'
                                         className='sign-up-form-control'
                                         name='contact'
-                                        value={signUpData.contact || ''}
+                                        value={driverSignUpData.contact || ''}
                                         onChange={handleChange}
-                                        isInvalid={validated && signUpData.contact.trim() === ''}
+                                        isInvalid={validated && driverSignUpData.contact.trim() === ''}
                                         required/>
 
                                     <Form.Control.Feedback type='invalid'>
@@ -318,13 +318,13 @@ export default function Sign_up() {
                                             placeholder='Enter password'
                                             className='sign-up-form-control-password'
                                             name='password'
-                                            value={signUpData.password || ''}
+                                            value={driverSignUpData.password || ''}
                                             onChange={handleChange}
                                             isInvalid={
                                                 validated && 
                                                 (
-                                                    signUpData.password.trim() === '' ||
-                                                    !validatePassword(signUpData.password).isValid
+                                                    driverSignUpData.password.trim() === '' ||
+                                                    !validatePassword(driverSignUpData.password).isValid
                                                 )
                                             }
                                             required/>
@@ -340,24 +340,24 @@ export default function Sign_up() {
                                                     height={20}/>
                                             </Button>
 
-                                        {signUpData.password.trim() === '' && (
+                                        {driverSignUpData.password.trim() === '' && (
                                             <Form.Control.Feedback type='invalid'>
                                                 Please enter an valid password.
                                             </Form.Control.Feedback>
                                         )}
                                     </InputGroup>
 
-                                    {signUpData.password && (
+                                    {driverSignUpData.password && (
                                         <div className='sign-up-password-live-validate'>
-                                            <Form.Text className={validatePassword(signUpData.password).rules.minLength ? 'valid' : 'invalid'}>
+                                            <Form.Text className={validatePassword(driverSignUpData.password).rules.minLength ? 'valid' : 'invalid'}>
                                                 At least 8 characters minimum.
                                             </Form.Text>
 
-                                            <Form.Text className={validatePassword(signUpData.password).rules.minUppercase ? 'valid' : 'invalid'}>
+                                            <Form.Text className={validatePassword(driverSignUpData.password).rules.minUppercase ? 'valid' : 'invalid'}>
                                                 At least 1 uppercase letter.
                                             </Form.Text>
 
-                                            <Form.Text className={validatePassword(signUpData.password).rules.minSymbols ? 'valid' : 'invalid'}>
+                                            <Form.Text className={validatePassword(driverSignUpData.password).rules.minSymbols ? 'valid' : 'invalid'}>
                                                 At least 1 special symbol.                                                  
                                             </Form.Text>
                                         </div>
@@ -373,13 +373,13 @@ export default function Sign_up() {
                                             placeholder='Enter confirm password'
                                             className='sign-up-form-control-password'
                                             name='confirm_pass'
-                                            value={signUpData.confirm_pass || ''}
+                                            value={driverSignUpData.confirm_pass || ''}
                                             onChange={handleChange}
                                             isInvalid={
                                                 validated && 
                                                 (
-                                                    signUpData.confirm_pass.trim() === '' ||
-                                                    (signUpData.confirm_pass !== signUpData.password)
+                                                    driverSignUpData.confirm_pass.trim() === '' ||
+                                                    (driverSignUpData.confirm_pass !== driverSignUpData.password)
                                                 )   
                                             }
                                             required/>
@@ -395,7 +395,7 @@ export default function Sign_up() {
                                                 height={20}/>
                                         </Button>
 
-                                        {signUpData.confirm_pass.trim() === '' && (
+                                        {driverSignUpData.confirm_pass.trim() === '' && (
                                             <Form.Control.Feedback type='invalid'>
                                                 Please enter an valid confirm password.
                                             </Form.Control.Feedback>
@@ -428,7 +428,7 @@ export default function Sign_up() {
                     </div>
 
                     <div>
-                        <Link to='/login'
+                        <Link to='/driver-login'
                         className='sign-up-link'>Return to Login</Link>
                     </div>
                 </div>

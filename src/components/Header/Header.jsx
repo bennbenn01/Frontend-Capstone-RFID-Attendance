@@ -16,6 +16,7 @@ export default function Header() {
     const location = useLocation();
 
     const { activeKey, windowWidth } = useSelector((state) => state.header);
+    const { role } = useSelector((state) => state.auth);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isOffCanvasOpen, setIsOffCanvasOpen] = useState(false);
 
@@ -59,9 +60,9 @@ export default function Header() {
 
         await dispatch(logoutUser()).unwrap();
 
-        await dispatch(logout()).unwrap();
+        dispatch(logout());
 
-        navigate('/login');
+        navigate('/home');
     }
 
     return(
@@ -87,17 +88,29 @@ export default function Header() {
                                     dispatch(setActiveKey(eventKey));
                                     handleSelection(eventKey);
                                 }}>
-                                <Nav.Item>
-                                    <Nav.Link eventKey='/dashboard' className='header-nav-link'>Dashboard</Nav.Link>
-                                </Nav.Item>
+                                {role === 'super-admin' && (
+                                    <Nav.Item>
+                                        <Nav.Link eventKey='/admin-dashboard' className='header-nav-link'>Admin Dashboard</Nav.Link>
+                                    </Nav.Item>
+                                )}
 
-                                <Nav.Item>
-                                    <Nav.Link eventKey='/manage-users' className='header-nav-link'>Manage Users</Nav.Link>
-                                </Nav.Item>
+                                {(role === 'admin' || role === 'driver') && (
+                                    <Nav.Item>
+                                        <Nav.Link eventKey='/dashboard' className='header-nav-link'>Dashboard</Nav.Link>
+                                    </Nav.Item>
+                                )}
 
-                                <Nav.Item>
-                                    <Nav.Link eventKey='/logs' className='header-nav-link'>Logs</Nav.Link>
-                                </Nav.Item>
+                                {(role === 'super-admin' || role === 'admin') && (
+                                    <Nav.Item>
+                                        <Nav.Link eventKey='/manage-users' className='header-nav-link'>Manage Users</Nav.Link>
+                                    </Nav.Item>
+                                )}
+
+
+                                    <Nav.Item>
+                                        <Nav.Link eventKey='/logs' className='header-nav-link'>Logs</Nav.Link>
+                                    </Nav.Item>
+                                
                             </Nav>
 
                             <Dropdown
@@ -131,6 +144,9 @@ export default function Header() {
                                     dispatch(setActiveKey(eventKey));
                                     handleSelection(eventKey);
                                 }}>
+                                {role === 'super-admin' && (
+                                    <Nav.Link eventKey='/admin-dashboard'>Admin Dashboard</Nav.Link>
+                                )}
                                 <Nav.Link eventKey='/dashboard'>Dashboard</Nav.Link>
                                 <Nav.Link eventKey='/manage-users'>Manage Users</Nav.Link>
                                 <Nav.Link eventKey='/logs'>Logs</Nav.Link>

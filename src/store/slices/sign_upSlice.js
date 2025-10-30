@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit"
 import {
     signUpUser,
+    signUpDriverUser,
     googleSignUp,
+    googleDriverSignUp,
 
     verifyEmail,
     verifyGoogleEmail,
@@ -12,6 +14,16 @@ const initialState = {
         fname: '',
         lname: '',
         admin_name: '',
+        email: '',
+        contact: '',
+        password: '',
+        confirm_pass: '',
+    },
+
+    driverSignUpData: {
+        fname: '',
+        lname: '',
+        driver_name: '',
         email: '',
         contact: '',
         password: '',
@@ -32,6 +44,10 @@ const sign_upSlice = createSlice({
         signupField: (state, action) => {
             const { field, value } = action.payload;
             state.signUpData[field] = value;
+        },
+        setDriverSignupField: (state, action) => {
+            const { field, value } = action.payload;
+            state.driverSignUpData[field] = value;
         },
         setSignUpData: (state, action) => {
             const { field, value } = action.payload;
@@ -64,7 +80,33 @@ const sign_upSlice = createSlice({
                 );
             })
 
+            .addCase(signUpDriverUser.fulfilled, (state) => {
+                state.sign_upStatus = 'pending';
+
+                sessionStorage.setItem(
+                    'signup', 
+                    JSON.stringify({
+                        method: 'local',
+                        status: 'pending',
+                        expiresAt: Date.now() + 30 * 60 * 1000
+                    })
+                );
+            })
+
             .addCase(googleSignUp.fulfilled, (state) => {
+                state.sign_upStatus = 'success';
+
+                sessionStorage.setItem(
+                    'signup',
+                    JSON.stringify({
+                        method: 'google',
+                        status: 'pending',
+                        expiresAt: Date.now() + 30 * 60 * 1000
+                    })
+                );
+            })
+
+            .addCase(googleDriverSignUp.fulfilled, (state) => {
                 state.sign_upStatus = 'success';
 
                 sessionStorage.setItem(
@@ -133,6 +175,7 @@ const sign_upSlice = createSlice({
 
 export const {
     signupField,
+    setDriverSignupField,
     setSignUpData,
     verifyField,
     clearError,

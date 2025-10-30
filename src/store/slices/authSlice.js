@@ -1,7 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
 import {
+    loginSuperUser,
     loginUser,
+    driverLoginUser,
     googleLogin,
+    googleDriverLogin,
 
     verifyAnyUser,
 
@@ -29,6 +32,10 @@ const authSlice = createSlice({
             const { field, value } = action.payload;
             state[field] = value;
         },
+        driverLoginField: (state, action) => {
+            const { field, value } = action.payload;
+            state[field] = value;
+        },
         clearError: (state) => {
             state.error = null;
         },
@@ -40,19 +47,6 @@ const authSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(loginUser.fulfilled, (state, action) => {
-                state.loginStatus = 'success';
-                state.admin_name = null;
-                state.password = null;
-                state.isAuthenticated = true;
-                state.role = action.payload?.role || null;
-            })
-            .addCase(loginUser.rejected, (state, action) => {
-                state.loginStatus = 'failed';
-                state.isAuthenticated = false;
-                state.error = action.payload;
-            })
-
             .addCase(googleLogin.fulfilled, (state, action) => {
                 state.loginStatus = 'success';
                 state.isAuthenticated = true;
@@ -63,6 +57,17 @@ const authSlice = createSlice({
                 state.isAuthenticated = false;
                 state.error = action.payload;
             })
+
+            .addCase(googleDriverLogin.fulfilled, (state, action) => {
+                state.loginStatus = 'success';
+                state.isAuthenticated = true;
+                state.role = action.payload?.role || null;
+            })
+            .addCase(googleDriverLogin.rejected, (state, action) => {
+                state.loginStatus = 'failed';
+                state.isAuthenticated = false;
+                state.error = action.payload;
+            })            
 
             .addCase(verifyAnyUser.pending, (state) => {
                 state.loginStatus = 'loading';
@@ -126,11 +131,42 @@ const authSlice = createSlice({
                     state.loginStatus = 'loading';
                 }
             )
+
+        builder
+            .addMatcher(
+                (action) => [
+                    loginSuperUser.fulfilled.type, 
+                    loginUser.fulfilled.type, 
+                    driverLoginUser.fulfilled.type
+                ].includes(action.type),
+                (state, action) => {
+                    state.loginStatus = 'success';
+                    state.admin_name = null;
+                    state.password = null;
+                    state.isAuthenticated = true;
+                    state.role = action.payload?.role || null;
+                    state.error = null;
+                }
+            )
+
+            .addMatcher(
+                (action) => [
+                    loginSuperUser.rejected.type, 
+                    loginUser.rejected.type, 
+                    driverLoginUser.rejected.type
+                ].includes(action.type),
+                (state, action) => {
+                    state.loginStatus = 'failed';
+                    state.isAuthenticated = false;
+                    state.error = action.payload;
+                }
+            )
     }
 });
 
 export const {
     loginField,
+    driverLoginField,
     clearError,
     logout
 } = authSlice.actions;

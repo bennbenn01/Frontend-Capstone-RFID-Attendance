@@ -15,3 +15,31 @@ export const dashboardTable = createAsyncThunk(
         }
     }
 );
+
+export const dashboardDriverInfo = createAsyncThunk(
+    'dahsboard/fetchDriverInfo',
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await api.post(import.meta.env.VITE_APP_DASHBOARD_DRIVER_INFO, {});
+
+            return response.data;            
+        } catch (err) {
+            return rejectWithValue(err.response?.data?.message);            
+        }
+    }
+)
+
+export const submitRequestLeave = createAsyncThunk(
+    'dashboard/submitRequestLeave',
+    async (leaveData, { rejectWithValue }) => {
+        try {
+            const response = await api.post(import.meta.env.VITE_APP_DASHBOARD_SUBMIT_REQUEST_LEAVE, 
+                leaveData
+            );
+
+            return response.data;               
+        } catch (err) {
+            return rejectWithValue(err.response?.data?.message);
+        }
+    }
+)

@@ -58,17 +58,19 @@ export default function PrivateRoute({ children, allowedRoles = [] }) {
     }
 
     if (loginStatus === 'failed' && !isAuthenticated) {
-        return <Navigate to='/login' replace />
+        return <Navigate to='/home' replace />
     }
 
     if (isAuthenticated && loginStatus === 'success') {
         if (allowedRoles.length > 0) {
-            if (!role || !allowedRoles.includes(role)) {
-                return (
+            if (role === 'super-admin') {
+                return children;
+            } else if (!allowedRoles.includes(role)) {
+                return(
                     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: 'white', height: '100vh' }}>
                         <h3>🚫 Access Denied</h3>
-                        <p>You don't have permission to acess this page.</p>
-                    </div>
+                        <p>You don't have permission to access this page.</p>
+                    </div>                        
                 )
             }
         }
@@ -76,5 +78,5 @@ export default function PrivateRoute({ children, allowedRoles = [] }) {
         return children;
     }
 
-    return <Navigate to='/login' replace />;
+    return <Navigate to='/home' replace />;
 }

@@ -3,31 +3,31 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Image, Form, Button, InputGroup } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { loginField, clearError } from '../../store/slices/authSlice'
-import { loginUser, googleLogin } from '../../store/api/authThunks'
+import { loginSuperUser } from '../../store/api/authThunks'
 import { showModal, hideModal } from '../../store/slices/modalsSlice'
 import Modals from '../../components/Modals/Modals'
-import { useGoogleLogin } from '@react-oauth/google'
-import google from '../../assets/google.png'
 import logo from '/Bluman Toda Logo.png'
 import show_button from '../../assets/view.png'
 import hide_button from '../../assets/hide.png'
 import '../../styles/Login.css'
 
-export default function Login() {
+export default function Admin_Login() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [validated, setValidated] = useState(false);
 
-    const { admin_name, password, isAuthenticated, error } = useSelector((state) => state.auth);
+    const { admin_name, password, isAuthenticated, error, role } = useSelector((state) => state.auth);
     const { show, title, message } = useSelector((state) => state.modal);
 
     const [isPassword,  setIsPassword] = useState(false);
 
     useEffect(() => {
         if(isAuthenticated){
-            navigate('/dashboard');
+            if (role === 'super-admin') {
+                navigate('/admin-dashboard');
+            }
         }
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated, navigate, role]);
 
     useEffect(() => {
         if(error){
@@ -71,7 +71,7 @@ export default function Login() {
         setValidated(false);
 
         try {
-            await dispatch(loginUser({ admin_name, password })).unwrap();
+            await dispatch(loginSuperUser({ admin_name, password })).unwrap();
             sessionStorage.clear();
         } catch (err) {
             dispatch(showModal({
@@ -80,31 +80,6 @@ export default function Login() {
             }));
         }
     }
-
-    const handleGoogleLogin = useGoogleLogin({
-        onSuccess: async (tokenResponse) => {
-            try {
-                const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                    headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
-                });
-
-                const userInfo = await response.json();
-
-                const googleUserData = {
-                    googleId: userInfo.sub,
-                    email: userInfo.email,
-                };
-
-                await dispatch(googleLogin(googleUserData)).unwrap();     
-                sessionStorage.clear();         
-            } catch (err) {
-                dispatch(showModal({
-                    title: 'Google Login Failed',
-                    message: err
-                }));
-            }
-        }
-    });
 
     const clearAllErrors = () => {
         dispatch(clearError());
@@ -139,7 +114,7 @@ export default function Login() {
                     </div>
 
                     <h4 className='login-title'>Welcome to Bluman Toda!</h4>
-                    <h5 className='login-title'>Operator Login</h5>
+                    <h5 className='login-title'>Admin Login</h5>
 
                     <Form 
                         className='login-form-container'
@@ -201,28 +176,8 @@ export default function Login() {
                             className='login-form-button'>Login</Button>
                     </Form>
 
-                    <span className='login-or-text'>Or</span>
-
-                    <div className='login-button-container'>
-                        <Button 
-                            onClick={handleGoogleLogin}
-                            className='login-google-button'>
-                                <Image
-                                    src={google}
-                                    alt='Google Logo'
-                                    width={20}
-                                    height={20}/>
-                                <span>Continue with Google</span>
-                        </Button>
-                    </div>
-
                     <div>
                         <Link to='/forgot-password'>Forgot password?</Link>
-                    </div>
-
-                    <div>
-                        <Link to='/sign-up'
-                        className='login-link'>Sign-up</Link>
                     </div>
                 </div>
 
@@ -234,8 +189,6 @@ export default function Login() {
 
                     OK={
                         title === 'Login Failed' || 
-                        title === 'Google Login Failed' || 
-                        title === 'Verification Success' || 
                         title === 'Password Has Been Changed'
                     }
                 />

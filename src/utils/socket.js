@@ -13,8 +13,6 @@ export const connectSocket = () => {
         });
 
         socket.on('connect', () => {});
-
-        socket.on('disconnect', () => {});
     }
     
     if (!socket.connected) {

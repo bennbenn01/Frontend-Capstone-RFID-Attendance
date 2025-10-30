@@ -10,6 +10,15 @@ const initialState = {
 
     windowWidth: window.innerWidth,
 
+    updateAccData: {
+        id: '',
+        fname: '',
+        lname: '',
+        email: '',
+        admin_name: '',
+        contact: ''
+    },
+
     addInfoFormData: {
         driver_img: null,
         img_type: '',
@@ -95,7 +104,7 @@ const initialState = {
     dataAnalyticsSelectedFilters: {
         full_name: true,
         driver_id: false
-    }
+    },
 }
 
 const modalsSlice = createSlice({
@@ -120,6 +129,10 @@ const modalsSlice = createSlice({
             state.windowWidth = action.payload;
         },
         
+        setUpdateAccChange: (state, action) => {
+            const { field, value } = action.payload;
+            state.updateAccData[field] = value;
+        },
         setAddInfoFormChange: (state, action) => {
             const { field, value } = action.payload;
             state.addInfoFormData[field] = value;
@@ -129,6 +142,10 @@ const modalsSlice = createSlice({
             state.driverFormData[field] = value;
         },
 
+        setUpdateAccData: (state, action) => {
+            const { field, value } = action.payload;
+            state.updateAccData[field] = value;
+        },
         setDeviceFormData: (state, action) => {
             const { field, value } = action.payload;
             state.deviceFormData[field] = value;
@@ -183,7 +200,19 @@ const modalsSlice = createSlice({
         },
         setDataAnalyticsSelectedFilters: (state, action) => {
             state.dataAnalyticsSelectedFilters = action.payload;
-        }
+        },
+
+        resetAddInfoFormData: (state) => {
+            state.addInfoFormData = {
+                driver_img: null,
+                img_type: '',
+                driver_id: '',
+                firstName: '',
+                lastName: '',
+                contact: '',
+                plate_no: '',                
+            }
+        },
     }
 })
 
@@ -194,9 +223,11 @@ export const {
 
     setWindowWidth,
 
+    setUpdateAccChange,
     setAddInfoFormChange,
     setDriverFormChange,
 
+    setUpdateAccData,
     setDeviceFormData,
     setDriverImage,
     setDriverFormData,
@@ -217,6 +248,7 @@ export const {
     setPaymentSelectedFilters,
     setDataAnalyticsSelectedFilters,
 
+    resetAddInfoFormData,
     
 } = modalsSlice.actions;
 

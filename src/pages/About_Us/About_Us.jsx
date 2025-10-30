@@ -137,7 +137,7 @@ export default function About_Us() {
                     message={message}
 
                     OK={
-                        title === 'Confirmation Logout Failed' ||
+                        title === 'Confirmation Timeout Failed' ||
                         title === 'Contact Developer'
                     }
 

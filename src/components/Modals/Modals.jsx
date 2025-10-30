@@ -7,6 +7,7 @@ import {
 
     setWindowWidth,
 
+    setUpdateAccChange,
     setAddInfoFormChange,
     setDriverFormChange,
 
@@ -27,7 +28,9 @@ import {
     setDataAnalyticsSelectedFields,
     setDataAnalyticsSelectedFilters,
 } from '../../store/slices/modalsSlice'
+import { submitRequestLeave } from '../../store/api/dashboardThunks' 
 import { generateRfidUuid } from '../../utils/generateRfidUuid'
+import { useNavigate } from 'react-router-dom'
 import profile_pic from '../../assets/profile_pic.png'
 import restart from '../../assets/restart.png'
 import '../../styles/Modals.css'
@@ -42,6 +45,10 @@ export default function Modals({
     handleYesClick,
     handleModalYesClick,
     handleNoClick,
+
+    update_acc,
+    update_acc_buttons,
+    handleUpdateAccSubmit,
 
     add_info,
     add_info_buttons,
@@ -59,15 +66,21 @@ export default function Modals({
 
     payment_buttons,
 
+    invoice_buttons,
+
+    request_leave_data,
+    request_buttons,
+
     filter_data,
     filter_buttons,
 
     footer_msg,
 }) {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const { deviceFormData, driverFormData } = useSelector((state) => state.modal);
-    const { addInfoFormData, paymentFormData } = useSelector((state) => state.modal);
+    const { addInfoFormData, paymentFormData, updateAccData } = useSelector((state) => state.modal);
     const { confirmLogoutData } = useSelector((state) => state.app);
     const { sign_upErrPassMsg } = useSelector((state) => state.sign_up);
     const { forgot_passErrPassMsg } = useSelector((state) => state.forgot_password);
@@ -83,8 +96,13 @@ export default function Modals({
     const [imageFile, setImageFile] = useState(null);
     const [_, setPreviewUrl] = useState(null);
 
+    const [leaveType, setLeaveType] = useState([]);
+    const [dateRange, setDateRange] = useState('');
+    const [remarks, setRemarks] = useState('');
+
     const [addInfoValidated, setAddInfoValidated] = useState(false);
     const [updateDriverValidated, setUpdateDriverValidated] = useState(false);
+    const [updateAccValidated, setUpdateAccValidated] = useState(false);
 
     const getCurrentFilters = useCallback(() => {
         if (filter_data === dashboardFilters) return dashboardSelectedFilters;
@@ -162,6 +180,11 @@ export default function Modals({
         )
     }
 
+    const handleUpdateAccChange = (e) => {
+        const { name, value } = e.target;
+        dispatch(setUpdateAccChange({ field: name, value }));
+    }
+
     const handleAddImageChange = (e) => {
         const file = e.target.files[0];
         if (file && file.type.startsWith('image/')) {
@@ -194,6 +217,23 @@ export default function Modals({
     const handleDriverChange = (e) => {
         const { name, value } = e.target;
         dispatch(setDriverFormChange({ field: name, value }));
+    }
+
+    const handleUpdateAccInpSubmit = (e) => {
+        e.preventDefault();
+
+        const form = e.currentTarget;
+        if (form.checkValidity() === false) {
+            e.stopPropagation();
+            setUpdateAccValidated(true);
+            return;
+        }
+
+        setUpdateAccValidated(false);
+
+        if (handleUpdateAccSubmit) {
+            handleUpdateAccSubmit();
+        }        
     }
 
     const handleAddInfoInpSubmit = (e) => {
@@ -283,6 +323,42 @@ export default function Modals({
         }));
     }
 
+    const handleOpenInvoice = () => {
+        navigate('/driver-invoice');
+    }
+
+    const handleNewTabInvoice = () => {
+        window.open('/driver-invoice', '_blank');
+    }
+
+    const handleRequestCheckboxChange = (type) => {
+        setLeaveType(prev =>
+            prev.includes(type)
+                ? prev.filter(item => item !== type)
+                : [...prev, type]
+        );        
+    }
+
+    const handleRequestLeave = async () => {
+        
+        const data = {
+            leaveType,
+            dateRange,
+            remarks,
+        };
+        
+        await dispatch(submitRequestLeave(data)).unwrap();
+
+        setLeaveType([]);
+        setDateRange('');
+        setRemarks('');
+
+        dispatch(showModal({
+            title: 'Request Leave Success',
+            message: 'Request has been submitted.'
+        }));
+    }
+
     const handleCheckboxChange = (key, isChecked) => {
         setLocalFilters(prev => ({ ...prev, [key]: isChecked }))
     }
@@ -335,6 +411,105 @@ export default function Modals({
                             <div>{message}</div>
                         )}
                     </div>
+
+                    {update_acc && (
+                        <>
+                            <div className=''>
+                                <Form
+                                    id='updateAccForm'
+                                    className=''
+                                    noValidate
+                                    validated={updateAccValidated}
+                                    onSubmit={handleUpdateAccInpSubmit}>
+
+                                    <Form.Group>
+                                        <Form.Text>Firstname</Form.Text>
+
+                                        <Form.Control
+                                            type='text'
+                                            name='fname'
+                                            value={updateAccData.fname || '-'}
+                                            placeholder='Enter first name'
+                                            onChange={handleUpdateAccChange}
+                                            isInvalid={updateAccValidated && !updateAccData.fname}
+                                            required />
+
+                                        <Form.Control.Feedback type='invalid'>
+                                            first name is required.
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+ 
+                                    <Form.Group>
+                                        <Form.Text>Lastname</Form.Text>
+
+                                        <Form.Control
+                                            type='text'
+                                            name='lname'
+                                            value={updateAccData.lname || '-'}
+                                            placeholder='Enter last name'
+                                            onChange={handleUpdateAccChange}
+                                            isInvalid={updateAccValidated && !updateAccData.lname}
+                                            required />
+
+                                        <Form.Control.Feedback type='invalid'>
+                                            last name is required.
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+
+                                    <Form.Group>
+                                        <Form.Text>Email</Form.Text>
+
+                                        <Form.Control
+                                            type='text'
+                                            name='email'
+                                            value={updateAccData.email || '-'}
+                                            placeholder='Enter email'
+                                            onChange={handleUpdateAccChange}
+                                            isInvalid={updateAccValidated && !updateAccData.lname}
+                                            required />
+
+                                        <Form.Control.Feedback type='invalid'>
+                                            email is required.
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+
+                                    <Form.Group>
+                                        <Form.Text>Admin Name</Form.Text>
+
+                                        <Form.Control
+                                            type='text'
+                                            name='admin_name'
+                                            value={updateAccData.admin_name || '-'}
+                                            placeholder='Enter admin name'
+                                            onChange={handleUpdateAccChange}
+                                            isInvalid={updateAccValidated && !updateAccData.lname}
+                                            required />
+
+                                        <Form.Control.Feedback type='invalid'>
+                                            admin name is required.
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+
+                                    <Form.Group>
+                                        <Form.Text>Contact</Form.Text>
+
+                                        <Form.Control
+                                            type='text'
+                                            name='contact'
+                                            value={updateAccData.contact || '-'}
+                                            placeholder='Enter contact'
+                                            onChange={handleUpdateAccChange}
+                                            isInvalid={updateAccValidated && !updateAccData.contact}
+                                            required />
+
+                                        <Form.Control.Feedback type='invalid'>
+                                            contact number is required
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                </Form>
+                            </div>
+                        </>
+                    )}
 
                     {add_info && (
                         <>
@@ -735,6 +910,46 @@ export default function Modals({
                         </>
                     )}
 
+                    {request_leave_data && (
+                        <>
+                            <div className='reminder_msg'>
+                                <h4>Leave Type</h4>
+
+                                <Form>
+                                    {['Sick leave', 'Vehicle repair', 'Personal Reason'].map((type) => (
+                                        <Form.Check
+                                            key={type}
+                                            type='checkbox'
+                                            label={type}
+                                            checked={leaveType.includes(type)}
+                                            onChange={() => handleRequestCheckboxChange(type)}
+                                        />
+                                    ))}
+
+                                    <Form.Group className='mt-3'>
+                                        <Form.Label>Date Range</Form.Label>
+                                        <Form.Control
+                                            type='datetime-local'
+                                            value={dateRange}
+                                            onChange={(e) => setDateRange(e.target.value)}
+                                        />
+                                    </Form.Group>
+
+                                    <Form.Group className='mt-3'>
+                                        <Form.Label>Remarks (Optional)</Form.Label>
+                                        <Form.Control
+                                            as='textarea'
+                                            rows={2}
+                                            placeholder='Short explanation...'
+                                            value={remarks}
+                                            onChange={(e) => setRemarks(e.target.value)}
+                                        />
+                                    </Form.Group>
+                                </Form>
+                            </div>
+                        </>
+                    )}
+
                     {footer_msg && (
                         <>
                             {footer_msg === 'facebook' ? (
@@ -791,6 +1006,17 @@ export default function Modals({
                             </div>
                         </>
                     )}
+
+                    {update_acc_buttons && (
+                        <>
+                            <div className='modal-footer-button-container'>
+                                <Button
+                                    type='submit'
+                                    form='updateAccForm'
+                                    className='moda-footer-button'>Update Operator</Button>
+                            </div>
+                        </>
+                    )}              
 
                     {add_info_buttons && (
                         <>
@@ -859,6 +1085,28 @@ export default function Modals({
                                     onClick={handleConfirmLogoutSubmit}>
                                     Confirm Logout
                                 </Button>
+                            </div>
+                        </>
+                    )}
+
+                    {invoice_buttons && (
+                        <>
+                            <div className='modal-footer-button-container'>
+                                <Button 
+                                    className='modal-footer-button'
+                                    onClick={handleOpenInvoice}>Open Invoice directly</Button>
+                                <Button 
+                                    className='modal-footer-button'
+                                    onClick={handleNewTabInvoice}>Open Invoice in new tab</Button>
+                            </div>
+                        </>
+                    )}
+
+                    {request_buttons && (
+                        <>
+                            <div className='modal-footer-button-container'>
+                                <Button className='modal-footer-button'
+                                    onClick={handleRequestLeave}>Submit Request Leave</Button>
                             </div>
                         </>
                     )}

@@ -1,0 +1,39 @@
+.manual-attendance-container {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.manual-attendance-card {
+    border-radius: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.manual-attendance-header {
+    font-weight: 600;
+    color: #333;
+}
+
+.manual-attendance-button {
+    border-radius: 0.75rem;
+    font-size: 1.2rem;
+    padding: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.manual-attendance-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.manual-attendance-button i {
+    font-size: 1.3rem;
+}
+
+@media (max-width: 768px) {
+    .manual-attendance-button {
+        font-size: 1rem;
+        padding: 0.75rem;
+    }
+}

@@ -30,6 +30,10 @@
         flex-direction: row;
         justify-content: space-between;
     }
+
+    .dashboard-driver-buttons {
+        width: 100%;
+    }
 }
 
 @media (min-width: 321px) and (max-width: 425px) {
@@ -71,6 +75,10 @@
         flex-direction: row;
         justify-content: space-between;
     }
+
+    .dashboard-driver-buttons {
+        width: 100%;
+    }
 }
 
 @media (min-width: 426px) and (max-width: 700px) {
@@ -109,8 +117,12 @@
 
     .dashboard-sub-summary-3-text {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         justify-content: space-between;
+    }
+
+    .dashboard-driver-buttons {
+        width: 100%;
     }
 }
 
@@ -167,6 +179,10 @@
         flex-direction: row;
         justify-content: space-between;
     }
+
+    .dashboard-driver-buttons {
+        width: 100%;
+    }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
@@ -221,6 +237,10 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+    }
+
+    .dashboard-driver-buttons {
+        width: 100%;
     }
 }
 
@@ -277,6 +297,10 @@
         flex-direction: row;
         justify-content: space-between;
     }
+
+    .dashboard-driver-buttons {
+        width: 100%;
+    }
 }
 
 @media (min-width: 1441px) {
@@ -331,6 +355,10 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+    }
+
+    .dashboard-driver-buttons {
+        width: 100%;
     }
 }
 
@@ -453,4 +481,37 @@
     background-color: rgb(40, 167, 69);
     border-color: rgb(40, 167, 69);
     color: white;
+}
+
+.dashboard-driver-card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: white;
+    padding: 2%;
+}
+
+.dashboard-driver-text-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-driver-text { 
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.dashboard-driver-container-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-self: center;
+    gap: 10px;
+}
+
+.dashboard-driver-image {
+    border: 1px solid black;
+    border-radius: 11px;
+    background-color: white;
 }

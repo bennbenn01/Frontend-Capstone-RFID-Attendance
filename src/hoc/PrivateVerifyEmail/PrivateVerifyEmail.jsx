@@ -12,7 +12,7 @@ export default function PrivateVeriftyEmail({ children }) {
     const storedStatus = getSignupSession();
 
     if(storedStatus.status !== 'pending'){
-        return <Navigate to='/login' replace/>
+        return <Navigate to='/home' replace/>
     }
 
     return children;

@@ -85,7 +85,7 @@ export default function Verify_Email() {
 
                 sessionStorage.removeItem('signup');
 
-                navigate('/login');
+                navigate('/home');
             }
 
             if (signup.method === 'google') {
@@ -93,7 +93,7 @@ export default function Verify_Email() {
 
                 sessionStorage.removeItem('signup');
 
-                navigate('/login');
+                navigate('/home');
             }
 
             dispatch(showModal({

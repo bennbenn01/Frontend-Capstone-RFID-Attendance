@@ -1,0 +1,140 @@
+@media (max-width: 320px) {
+    .admin-dashboard-table-action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .admin-dashboard-listgroup-button-container {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+@media (min-width: 321px) and (max-width: 425px) {
+    .admin-dashboard-table-action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .admin-dashboard-listgroup-button-container {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+@media (min-width: 426px) and (max-width: 768px) {
+    .admin-dashboard-table-action-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .admin-dashboard-listgroup-button-container {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .admin-dashboard-table-action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .admin-dashboard-listgroup-button-container {
+        display: flex;
+        gap: 5px;
+    }
+
+    .admin-dashboard-button {
+        width: 100%;
+    }
+}
+
+@media (min-width: 1025px) and (max-width: 1440px) {
+    .admin-dashboard-table-action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .admin-dashboard-listgroup-button-container {
+        display: flex;
+        gap: 5px;
+    }
+
+    .admin-dashboard-button {
+        width: 100%;
+    }
+}
+
+@media (min-width: 1441px) {
+    .admin-dashboard-table-action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .admin-dashboard-listgroup-button-container {
+        display: flex;
+        gap: 5px;
+    }
+
+    .admin-dashboard-button {
+        width: 100%;
+    }
+}
+
+.admin-dashboard-main-container {
+    display: flex;
+    flex-direction: column;
+    margin: 2%;
+    gap: 15px;
+}
+
+.admin-dashboard-table-container {
+    max-height: 600px;
+    overflow-y: auto !important;
+}
+
+.admin-dashboard-table {
+    text-align: center;
+    table-layout: fixed;
+}
+
+.admin-dashboard-table-row td {
+    vertical-align: middle;
+}
+
+.admin-dashboard-table-header th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.admin-dashboard-listgroup-container {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    gap: 10px;
+}
+
+.admin-dashboard-listgroup-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.admin-dashboard-listgroup-label {
+    display: flex;
+    align-self: center;
+    font-weight: bold;
+}
+
+.admin-dashboard-listgroup-row {
+    display: flex;
+    justify-content: space-between;
+}
